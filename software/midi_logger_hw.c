@@ -13,10 +13,9 @@
 #define ENDPOINT_IN      0x81
 
 // FPGA memory mapping
-#define HW_REGS_BASE     0xFF200000
-#define HW_REGS_SPAN     0x00200000
-#define MIDI_DATA_OFFSET 0x00001000
-#define MIDI_TIME_OFFSET 0x00001004
+#define HW_REGS_BASE         0xFF200000
+#define HW_REGS_SPAN         0x00200000
+#define MIDI_INPUT_OFFSET    0x00002008   // FPGA expects real-time input write at different address (address 0x1)
 
 int main() {
     libusb_context *ctx = NULL;
@@ -27,10 +26,9 @@ int main() {
     // mmap variables
     int mem_fd;
     void *virtual_base;
-    volatile uint32_t *midi_data_ptr;
-    volatile uint32_t *midi_time_ptr;
+    volatile uint64_t *midi_input_ptr;
 
-    printf("🎹 Launchkey MIDI Logger with FPGA HW Write Starting...\n");
+    printf("🎹 Launchkey MIDI Logger with FPGA HW Write (Real-Time User Input) Starting...\n");
 
     // Open /dev/mem and mmap FPGA registers
     if ((mem_fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1) {
@@ -45,8 +43,7 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    midi_data_ptr = (uint32_t *)(virtual_base + MIDI_DATA_OFFSET);
-    midi_time_ptr = (uint32_t *)(virtual_base + MIDI_TIME_OFFSET);
+    midi_input_ptr = (uint64_t *)(virtual_base + MIDI_INPUT_OFFSET);
 
     // Initialize USB
     if (libusb_init(&ctx) < 0) {
@@ -84,26 +81,25 @@ int main() {
                 if (i + 3 >= transferred) break;
                 unsigned char cin = buffer[i] & 0x0F;
                 unsigned char status = buffer[i + 1];
-                unsigned char data1 = buffer[i + 2];
-                unsigned char data2 = buffer[i + 3];
+                unsigned char note = buffer[i + 2];
+                unsigned char velocity = buffer[i + 3];
 
-                // Print decoded output
-                printf("[%llu us] Raw: %02X %02X %02X %02X  ", timestamp_us, buffer[i], status, data1, data2);
-                if ((status & 0xF0) == 0x90 && data2 > 0) {
-                    printf("Note On - Note: 0x%02X (%d), Velocity: 0x%02X (%d)\n", data1, data1, data2, data2);
-                } else {
-                    printf("\n");
+                // Only handle valid Note On
+                if ((status & 0xF0) == 0x90 && velocity > 0) {
+                    // Print decoded output
+                    printf("[%llu us] Note On: Note = %d, Velocity = %d\n", timestamp_us, note, velocity);
+
+                    // Pack status, note, velocity and timestamp into 64 bits
+                    uint64_t packed_data = 0;
+                    packed_data |= ((uint64_t)status << 16);
+                    packed_data |= ((uint64_t)note << 8);
+                    packed_data |= (uint64_t)velocity;
+                    packed_data |= ((uint64_t)(timestamp_us & 0xFFFFFFFF)) << 24;
+
+                    *midi_input_ptr = packed_data; // Write to FPGA
+
+                    usleep(100); // (optional) small delay to avoid overwriting
                 }
-
-                // Write to FPGA (example: pack into 32 bits: status | note | vel | timestamp LSB)
-                uint32_t midi_data_word = (status << 16) | (data1 << 8) | data2;
-                uint32_t timestamp_low = (uint32_t)(timestamp_us & 0xFFFFFFFF);
-
-                *midi_data_ptr = midi_data_word;
-                *midi_time_ptr = timestamp_low;
-
-                // Optional: add delay if needed to prevent overwriting
-                usleep(100); // 100 µs delay (tune this as needed)
             }
         } else if (result == LIBUSB_ERROR_TIMEOUT) {
             continue;
@@ -123,4 +119,3 @@ int main() {
 
     return EXIT_SUCCESS;
 }
-
