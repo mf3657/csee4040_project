@@ -3,19 +3,31 @@
 
 #include <linux/ioctl.h>
 
+/* Structure for VGA background color (3 bytes color + padding for alignment) */
 typedef struct {
-  unsigned char red, green, blue;
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
 } fpga_intf_color_t;
-  
 
+/* Structure for audio note command */
 typedef struct {
-  fpga_intf_color_t background;
-} fpga_intf_arg_t;
+    unsigned int note;
+} fpga_intf_note_t;
 
-#define VGA_BALL_MAGIC 'q'
+/* Structure for audio sample value */
+typedef struct {
+    unsigned int sample;
+} fpga_intf_sample_t;
 
-/* ioctls and their arguments */
-#define FPGA_INTF_WRITE_BACKGROUND _IOW(FPGA_INTF_MAGIC, 1, fpga_intf_arg_t)
-#define FPGA_INTF_READ_BACKGROUND  _IOR(FPGA_INTF_MAGIC, 2, fpga_intf_arg_t)
+/* Magic number for ioctl commands */
+#define FPGA_INTF_MAGIC  'F'
 
-#endif
+/* ioctl command codes */
+#define FPGA_INTF_SET_BACKGROUND  _IOW(FPGA_INTF_MAGIC, 1, fpga_intf_color_t)
+#define FPGA_INTF_GET_BACKGROUND  _IOR(FPGA_INTF_MAGIC, 2, fpga_intf_color_t)
+#define FPGA_INTF_SET_NOTE        _IOW(FPGA_INTF_MAGIC, 3, fpga_intf_note_t)
+#define FPGA_INTF_SET_SAMPLE1     _IOW(FPGA_INTF_MAGIC, 4, fpga_intf_sample_t)
+#define FPGA_INTF_SET_SAMPLE2     _IOW(FPGA_INTF_MAGIC, 5, fpga_intf_sample_t)
+
+#endif /* _FPGA_INTF_H */
