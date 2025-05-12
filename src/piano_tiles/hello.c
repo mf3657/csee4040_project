@@ -1,5 +1,3 @@
-// hello.c - Userspace app to mmap and optionally write VGA piano tile base
-
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -30,13 +28,15 @@ int main() {
     // Map the registers
     volatile uint32_t *piano_regs = (uint32_t *)((char *)virtual_base + PIANO_BASE_OFFSET);
 
-    // Optional: Write custom pattern to simulate key colors (3-bit each)
-    // Example pattern: keys 0–9 = red, green, blue, white, red, green, blue...
-    // Each 3 bits = 0bRRR (e.g., 0b111 = dark red, 0b100 = light green, etc.)
-    piano_regs[0] = 0b000_001_010_011_100_101_110_111_001_010; // 10 keys
-    piano_regs[1] = 0x49249249; // default white for next 10
-    piano_regs[2] = 0x49249249; // default white for last 5 (only 5 of 10 used)
-    piano_regs[3] = 0x00000000; // unused
+    // 3-bit colors: dark blue, white, light blue, dark red, green, ...
+    // Let's define 10 color values: (leftmost = lowest key)
+    // 000 001 010 011 100 101 110 111 001 010
+    // Converted to hex: 0b000001010011100101110111001010
+    // = 0x0A3CBCA2 (manually packed)
+    piano_regs[0] = 0x0A3CBCA2; // packed 10 key colors
+    piano_regs[1] = 0x49249249; // default white
+    piano_regs[2] = 0x49249249; // default white
+    piano_regs[3] = 0x00000000;
 
     // Read and print current state
     printf("[hello] Piano key registers:\n");
