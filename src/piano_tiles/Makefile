@@ -1,13 +1,19 @@
-# Makefile for piano_heroes kernel module and userspace app
+# Makefile for compiling and running vga_test without sudo
+TARGET = vga_test
+SRC = vga_test.c
+CC = gcc
+CFLAGS = -Wall -O2
 
-KDIR := /usr/src/linux-headers-$(shell uname -r)
-PWD  := $(shell pwd)
+.PHONY: all run clean
 
-obj-m := piano_heroes.o
+all: $(TARGET)
 
-all:
-	$(MAKE) -C $(KDIR) M=$(PWD) modules
-	gcc -o hello hello.c
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $@ $^
+
+run: all
+	@echo "Running without sudo..."
+	@./$(TARGET) || echo "⚠️  Run failed — check permissions for /dev/fpga_intf"
 
 clean:
-	rm -f *.o *.ko *.mod.* *.order *.symvers hello
+	rm -f $(TARGET)
