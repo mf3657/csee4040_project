@@ -1,5 +1,4 @@
-# Makefile for compiling and running vga_test
-
+# Makefile for compiling and running vga_test without sudo
 TARGET = vga_test
 SRC = vga_test.c
 CC = gcc
@@ -12,8 +11,9 @@ all: $(TARGET)
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $@ $^
 
-run: $(TARGET)
-	sudo ./$(TARGET)
+run: all
+	@echo "Running without sudo..."
+	@./$(TARGET) || echo "⚠️  Run failed — check permissions for /dev/fpga_intf"
 
 clean:
 	rm -f $(TARGET)
