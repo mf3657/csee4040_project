@@ -10,3 +10,10 @@ Game logic will be executed in C, at which point a custom linux kernal module wi
 -  Michael John Flynn (mf3657)
 -  Robel Wondwossen (rw3043)
 -  Zakiy Tywon Manigo (ztm2106)
+
+
+to run everthing use:
+    make             # builds everything
+    make run_logger  # runs midi_logger
+    make run         # defaults to run_logger
+
