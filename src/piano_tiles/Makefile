@@ -1,13 +1,19 @@
-# Makefile for piano_heroes kernel module and userspace app
+# Makefile for compiling and running vga_test
 
-KDIR := /usr/src/linux-headers-$(shell uname -r)
-PWD  := $(shell pwd)
+TARGET = vga_test
+SRC = vga_test.c
+CC = gcc
+CFLAGS = -Wall -O2
 
-obj-m := piano_heroes.o
+.PHONY: all run clean
 
-all:
-	$(MAKE) -C $(KDIR) M=$(PWD) modules
-	gcc -o hello hello.c
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $@ $^
+
+run: $(TARGET)
+	sudo ./$(TARGET)
 
 clean:
-	rm -f *.o *.ko *.mod.* *.order *.symvers hello
+	rm -f $(TARGET)
