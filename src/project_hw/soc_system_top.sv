@@ -266,7 +266,26 @@ module soc_system_top(
      .hps_hps_io_gpio_inst_GPIO48  ( HPS_I2C_CONTROL ),
      .hps_hps_io_gpio_inst_GPIO53  ( HPS_LED ),
      .hps_hps_io_gpio_inst_GPIO54  ( HPS_KEY ),
-     .hps_hps_io_gpio_inst_GPIO61  ( HPS_GSENSOR_INT )
+     .hps_hps_io_gpio_inst_GPIO61  ( HPS_GSENSOR_INT ),
+
+     .audio_aud_adcdat             (AUD_ADCDAT),       
+     .audio_aud_adclrck            (AUD_ADCLRCK),      
+     .audio_aud_bclk               (AUD_BCLK),               
+     .audio_aud_dacdat             (AUD_DACDAT),  
+     .audio_aud_daclrck            (AUD_DACLRCK),
+     .audio_aud_xck                (AUD_XCK),   
+     .audio_fpga_i2c_sclk          (FPGA_I2C_SCLK),  
+     .audio_fpga_i2c_sdat          (FPGA_I2C_SDAT), 
+
+     .vga_r (VGA_R),
+	 .vga_g (VGA_G),
+	 .vga_b (VGA_B),
+	 .vga_clk (VGA_CLK),
+	 .vga_hs (VGA_HS),
+	 .vga_vs (VGA_VS),
+	 .vga_blank_n (VGA_BLANK_N),
+	 .vga_sync_n (VGA_SYNC_N)
+
   );
 
    // The following quiet the "no driver" warnings for output
@@ -276,11 +295,11 @@ module soc_system_top(
    assign ADC_DIN = SW[0];
    assign ADC_SCLK = SW[0];
    
-   assign AUD_ADCLRCK = SW[1] ? SW[0] : 1'bZ;
-   assign AUD_BCLK = SW[1] ? SW[0] : 1'bZ;
-   assign AUD_DACDAT = SW[0];
-   assign AUD_DACLRCK = SW[1] ? SW[0] : 1'bZ;
-   assign AUD_XCK = SW[0];      
+//   assign AUD_ADCLRCK = SW[1] ? SW[0] : 1'bZ;
+//   assign AUD_BCLK = SW[1] ? SW[0] : 1'bZ;
+//   assign AUD_DACDAT = SW[0];
+//   assign AUD_DACLRCK = SW[1] ? SW[0] : 1'bZ;
+//   assign AUD_XCK = SW[0];      
 
    assign DRAM_ADDR = { 13{ SW[0] } };
    assign DRAM_BA = { 2{ SW[0] } };
@@ -314,9 +333,9 @@ module soc_system_top(
 
    assign TD_RESET_N = SW[0];
 
-   assign {VGA_R, VGA_G, VGA_B} = { 24{ SW[0] } };
-   assign {VGA_BLANK_N, VGA_CLK,
-	   VGA_HS, VGA_SYNC_N, VGA_VS} = { 5{ SW[0] } };
+//   assign {VGA_R, VGA_G, VGA_B} = { 24{ SW[0] } };
+//   assign {VGA_BLANK_N, VGA_CLK,
+//	   VGA_HS, VGA_SYNC_N, VGA_VS} = { 5{ SW[0] } };
 
 							          
 endmodule
