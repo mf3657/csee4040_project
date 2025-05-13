@@ -25,6 +25,7 @@ int main() {
     int mem_fd;
     void *virtual_base;
     volatile uint64_t *midi_input_ptr;
+    volatile uint32_t *song_ctrl_ptr;
 
     printf("🎹 Launchkey MIDI Logger with FPGA HW Write (Real-Time Input) Starting...\n");
 
@@ -43,6 +44,7 @@ int main() {
     }
 
     midi_input_ptr = (uint64_t *)((uint8_t *)virtual_base + MIDI_INPUT_OFFSET);
+    song_ctrl_ptr  = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET);  // ctrl[3] = game_started_hw
 
     // Initialize USB MIDI connection
     if (libusb_init(&ctx) < 0) {
@@ -76,6 +78,9 @@ int main() {
             gettimeofday(&tv, NULL);
             uint64_t timestamp_us = (uint64_t)tv.tv_sec * 1000000 + tv.tv_usec;
 
+            // Only send data if game has started
+            int game_started = song_ctrl_ptr[3];  // [3] = game_started_hw
+
             for (int i = 0; i < transferred; i += 4) {
                 if (i + 3 >= transferred) break;
 
@@ -83,13 +88,16 @@ int main() {
                 uint8_t note = buffer[i + 2];
                 uint8_t velocity = buffer[i + 3];
 
-                // Only send "Note On" with non-zero velocity
                 if ((status & 0xF0) == 0x90 && velocity > 0) {
-                    printf("[%llu us] Note On: Note = %d, Velocity = %d\n", timestamp_us, note, velocity);
-                    uint64_t packet = pack_midi_input(status, note, velocity, timestamp_us);
-                    *midi_input_ptr = packet;
+                    printf("[%llu us] Note On: Note = %d, Velocity = %d %s\n",
+                           timestamp_us, note, velocity,
+                           game_started ? "✅ sent" : "(preview)");
 
-                    usleep(100);  // Small delay to avoid bus contention
+                    if (game_started) {
+                        uint64_t packet = pack_midi_input(status, note, velocity, timestamp_us);
+                        *midi_input_ptr = packet;
+                        usleep(100);  // avoid bus contention
+                    }
                 }
             }
         } else if (result == LIBUSB_ERROR_TIMEOUT) {

@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <time.h>
 
 #include "midi_common.h"
 #include "hardware_defs.h"
@@ -41,51 +42,23 @@ int load_midi(const char *filename, MidiFile *midi) {
 
     midi->division = read16(midi->data + 12);
     midi->tempo_us_per_quarter = 500000; // default 120 BPM
-
     return 0;
 }
 
-int main() {
-    const char *input_filename = "harmony.mid";
-
-    MidiFile midi;
-    if (load_midi(input_filename, &midi) != 0) return -1;
-
-    // Setup memory-mapped FPGA access
-    int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-    if (mem_fd == -1) {
-        perror("❌ Failed to open /dev/mem");
-        free(midi.data);
-        return -1;
-    }
-
-    void *virtual_base = mmap(NULL, HW_REGS_SPAN, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, HW_REGS_BASE);
-    if (virtual_base == MAP_FAILED) {
-        perror("❌ mmap failed");
-        close(mem_fd);
-        free(midi.data);
-        return -1;
-    }
-
-    volatile uint64_t *song_loader_ptr = (uint64_t *)((uint8_t *)virtual_base + SONG_LOADER_OFFSET);
-
-    // Parse track
-    const uint8_t *ptr = midi.data + 14;
+void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
+    const uint8_t *ptr = midi->data + 14;
     if (memcmp(ptr, "MTrk", 4) != 0) {
         fprintf(stderr, "❌ No MTrk chunk found\n");
-        munmap(virtual_base, HW_REGS_SPAN);
-        close(mem_fd);
-        free(midi.data);
-        return -1;
+        return;
     }
-    ptr += 8; // skip 'MTrk' + track length
+    ptr += 8;
 
     ActiveNote active_notes[MAX_ACTIVE_NOTES] = {0};
     uint32_t current_ticks = 0;
     uint8_t last_status = 0;
-    double micros_per_tick = (double)midi.tempo_us_per_quarter / midi.division;
+    double micros_per_tick = (double)midi->tempo_us_per_quarter / midi->division;
 
-    while (ptr < midi.data + midi.size) {
+    while (ptr < midi->data + midi->size) {
         uint32_t delta_ticks = read_variable_length(&ptr);
         current_ticks += delta_ticks;
         uint32_t current_us = (uint32_t)(current_ticks * micros_per_tick);
@@ -98,7 +71,6 @@ int main() {
             last_status = status;
         }
 
-        // Note On
         if ((status & 0xF0) == 0x90 && ptr[1] > 0) {
             uint8_t note = transpose_note(ptr[0]);
             uint8_t velocity = ptr[1];
@@ -109,7 +81,6 @@ int main() {
             active_notes[note].start_us = current_us;
             active_notes[note].active = 1;
 
-        // Note Off or Note On with velocity 0
         } else if ((status & 0xF0) == 0x80 || ((status & 0xF0) == 0x90 && ptr[1] == 0)) {
             uint8_t note = transpose_note(ptr[0]);
 
@@ -128,22 +99,77 @@ int main() {
                 uint64_t packet = pack_midi_event(e);
                 *song_loader_ptr = packet;
 
-                printf("Packet Sent - Note: %d | Velocity: %d | Duration: %d ms | Timestamp: %u us\n",
+                printf("🎵 Packet Sent - Note: %d | Velocity: %d | Duration: %d ms | Timestamp: %u us\n",
                        e.note, e.velocity, e.duration_us / 1000, e.timestamp_us);
 
                 active_notes[note].active = 0;
             }
         }
 
-        ptr += 2; // skip note and velocity
+        ptr += 2;
+    }
+}
+
+int main() {
+    printf("🎼 Waiting for song trigger...\n");
+
+    int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
+    if (mem_fd < 0) {
+        perror("❌ Failed to open /dev/mem");
+        return 1;
     }
 
-    // Cleanup
+    void *virtual_base = mmap(NULL, HW_REGS_SPAN, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, HW_REGS_BASE);
+    if (virtual_base == MAP_FAILED) {
+        perror("❌ mmap failed");
+        close(mem_fd);
+        return 1;
+    }
+
+    volatile uint64_t *song_loader_ptr = (uint64_t *)((uint8_t *)virtual_base + SONG_LOADER_OFFSET);
+    volatile uint32_t *song_ctrl_ptr   = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET); // 0: index, 1: trigger, 2: done
+
+    while (1) {
+        uint32_t trigger = song_ctrl_ptr[1];  // song_load_trigger
+        uint32_t index = song_ctrl_ptr[0];    // song_index
+
+        if (trigger) {
+            char midi_path[64], mp3_path[64];
+            snprintf(midi_path, sizeof(midi_path), "songs/song%d.mid", index);
+            snprintf(mp3_path, sizeof(mp3_path), "songs/song%d.mp3", index);
+
+            printf("▶️ Loading MIDI: %s\n", midi_path);
+
+            MidiFile midi;
+            if (load_midi(midi_path, &midi) == 0) {
+                parse_and_send_midi(&midi, song_loader_ptr);
+                free(midi.data);
+                song_ctrl_ptr[2] = 1;  // song_loaded_done
+                printf("✅ Song loaded and sent to FPGA.\n");
+
+                // 🔊 Trigger MP3 playback
+                pid_t pid = fork();
+                if (pid == 0) {
+                    // In child process
+                    execlp("mpg123", "mpg123", mp3_path, NULL);
+                    perror("❌ Failed to launch mpg123");
+                    exit(1);
+                } else if (pid < 0) {
+                    perror("❌ Fork failed");
+                } else {
+                    printf("🔊 MP3 playback started: %s\n", mp3_path);
+                }
+
+            } else {
+                song_ctrl_ptr[2] = 0;
+                fprintf(stderr, "❌ Failed to load or parse song %d.\n", index);
+            }
+        }
+
+        usleep(50000);  // check every 50ms
+    }
+
     munmap(virtual_base, HW_REGS_SPAN);
     close(mem_fd);
-    free(midi.data);
-
-    printf("✅ All MIDI events transmitted to FPGA.\n");
-
     return 0;
 }
