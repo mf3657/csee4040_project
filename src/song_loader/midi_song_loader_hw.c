@@ -59,10 +59,12 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
     double micros_per_tick = (double)midi->tempo_us_per_quarter / midi->division;
 
     while (ptr < midi->data + midi->size) {
+        // --- Read delta time and update time ---
         uint32_t delta_ticks = read_variable_length(&ptr);
         current_ticks += delta_ticks;
         uint32_t current_us = (uint32_t)(current_ticks * micros_per_tick);
 
+        // --- Get status byte ---
         uint8_t status = *ptr;
         if (status < 0x80) {
             status = last_status;
@@ -71,6 +73,18 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
             last_status = status;
         }
 
+        // --- Tempo Change Meta Event ---
+        if (status == 0xFF && ptr[0] == 0x51 && ptr[1] == 0x03) {
+            ptr += 2;
+            uint32_t new_tempo = (ptr[0] << 16) | (ptr[1] << 8) | ptr[2];
+            midi->tempo_us_per_quarter = new_tempo;
+            micros_per_tick = (double)new_tempo / midi->division;
+            printf("🎼 Tempo Change: %u us/quarter → %.2f µs/tick\n", new_tempo, micros_per_tick);
+            ptr += 3;
+            continue;
+        }
+
+        // --- Note On ---
         if ((status & 0xF0) == 0x90 && ptr[1] > 0) {
             uint8_t note = transpose_note(ptr[0]);
             uint8_t velocity = ptr[1];
@@ -80,7 +94,9 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
             active_notes[note].start_ticks = current_ticks;
             active_notes[note].start_us = current_us;
             active_notes[note].active = 1;
+            ptr += 2;
 
+        // --- Note Off or Note On with 0 velocity ---
         } else if ((status & 0xF0) == 0x80 || ((status & 0xF0) == 0x90 && ptr[1] == 0)) {
             uint8_t note = transpose_note(ptr[0]);
 
@@ -104,9 +120,13 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
 
                 active_notes[note].active = 0;
             }
-        }
 
-        ptr += 2;
+            ptr += 2;
+
+        // --- Skip unknown event types (safely) ---
+        } else {
+            ptr += 2;
+        }
     }
 }
 
@@ -150,7 +170,6 @@ int main() {
                 // 🔊 Trigger MP3 playback
                 pid_t pid = fork();
                 if (pid == 0) {
-                    // In child process
                     execlp("mpg123", "mpg123", mp3_path, NULL);
                     perror("❌ Failed to launch mpg123");
                     exit(1);
