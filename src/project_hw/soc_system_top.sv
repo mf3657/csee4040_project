@@ -278,13 +278,13 @@ module soc_system_top(
      .audio_fpga_i2c_sdat          (FPGA_I2C_SDAT), 
 
      .vga_r (VGA_R),
-	 .vga_g (VGA_G),
-	 .vga_b (VGA_B),
-	 .vga_clk (VGA_CLK),
-	 .vga_hs (VGA_HS),
-	 .vga_vs (VGA_VS),
-	 .vga_blank_n (VGA_BLANK_N),
-	 .vga_sync_n (VGA_SYNC_N)
+	  .vga_g (VGA_G),
+	  .vga_b (VGA_B),
+	  .vga_clk (VGA_CLK),
+	  .vga_hs (VGA_HS),
+	  .vga_vs (VGA_VS),
+	  .vga_blank_n (VGA_BLANK_N),
+	  .vga_sync_n (VGA_SYNC_N)
 
   );
 
@@ -309,8 +309,8 @@ module soc_system_top(
 
    assign FAN_CTRL = SW[0];
 
-   assign FPGA_I2C_SCLK = SW[0];
-   assign FPGA_I2C_SDAT = SW[1] ? SW[0] : 1'bZ;
+//   assign FPGA_I2C_SCLK = SW[0];
+//   assign FPGA_I2C_SDAT = SW[1] ? SW[0] : 1'bZ;
 
    assign GPIO_0 = SW[1] ? { 36{ SW[0] } } : { 36{ 1'bZ } };
    assign GPIO_1 = SW[1] ? { 36{ SW[0] } } : { 36{ 1'bZ } };   

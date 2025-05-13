@@ -131,7 +131,7 @@ module fpga_intf (
     end
 
     // Polyphonic Audio Driver Instantiation
-    driver_interface_poly #(
+    polyphonicDriver #(
         .SAMPLE_LEN(48000),
         .NUM_VOICES(8)
     ) poly_driver (
