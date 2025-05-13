@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <libusb-1.0/libusb.h>
+#include <sndfile.h>
 #include "fpga_intf.h"
 
 #define VENDOR_ID        0x1235
@@ -49,6 +50,49 @@ libusb_device_handle* init_midi_device(libusb_context **ctx) {
     return handle;
 }
 
+
+void load_wav_samples(const char *filename, int sample_id, int dev_fd) {
+    SNDFILE *file;
+    SF_INFO info;
+    sf_count_t frames_read;
+    fpga_intf_sample_t sample;
+    
+    memset(&info, 0, sizeof(info));
+    file = sf_open(filename, SFM_READ, &info);
+    if (!file) {
+        fprintf(stderr, "Failed to open %s: %s\n", filename, sf_strerror(NULL));
+        return;
+    }
+
+    if (info.channels != 1 || info.samplerate != 48000 || info.format != (SF_FORMAT_WAV | SF_FORMAT_PCM_16)) {
+        fprintf(stderr, "Unsupported WAV format (must be 16-bit mono @ 48kHz): %s\n", filename);
+        sf_close(file);
+        return;
+    }
+
+    printf("Loading %s as sample %d...\n", filename, sample_id);
+
+    for (int i = 0; i < 48000; ++i) {
+        short pcm;
+        frames_read = sf_read_short(file, &pcm, 1);
+        if (frames_read == 0) break;
+
+        sample.sample = (uint16_t) pcm;
+
+        if (sample_id == 1) {
+            if (ioctl(dev_fd, FPGA_INTF_SET_SAMPLE1, &sample) < 0)
+                perror("ioctl SET_SAMPLE1 failed");
+        } else if (sample_id == 2) {
+            if (ioctl(dev_fd, FPGA_INTF_SET_SAMPLE2, &sample) < 0)
+                perror("ioctl SET_SAMPLE2 failed");
+        }
+    }
+
+    sf_close(file);
+    printf("Sample %d loaded.\n", sample_id);
+}
+
+
 void handle_midi_packet(unsigned char *packet, int fd) {
     unsigned char status = packet[1];
     unsigned char note   = packet[2];
@@ -76,6 +120,9 @@ void handle_midi_packet(unsigned char *packet, int fd) {
 
 int main() {
     int dev_fd = open_fpga_interface();
+
+    load_wav_samples("c3.wav", 1, dev_fd);
+    load_wav_samples("c4.wav", 2, dev_fd);
 
     libusb_context *ctx = NULL;
     libusb_device_handle *midi = init_midi_device(&ctx);

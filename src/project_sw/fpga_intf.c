@@ -27,9 +27,9 @@ struct fpga_intf_dev {
     struct resource res;      /* memory resource for registers */
     void __iomem *virtbase;   /* virtual base address for FPGA regs */
     fpga_intf_color_t background; /* last written background color */
-    unsigned int note;        /* last written note value */
-    unsigned int sample1;     /* last written sample1 value */
-    unsigned int sample2;     /* last written sample2 value */
+    fpga_intf_note_t note;        /* last written note value */
+    fpga_intf_sample_t sample1;     /* last written sample1 value */
+    fpga_intf_sample_t sample2;     /* last written sample2 value */
 } dev;
 
 /* Write VGA background color components to FPGA registers */
