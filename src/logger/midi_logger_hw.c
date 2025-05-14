@@ -44,7 +44,7 @@ int main() {
     }
 
     midi_input_ptr = (uint64_t *)((uint8_t *)virtual_base + MIDI_INPUT_OFFSET);
-    song_ctrl_ptr  = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET);  // ctrl[3] = game_started_hw
+    song_ctrl_ptr  = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET);  // [3] = game_started_hw
 
     // Initialize USB MIDI connection
     if (libusb_init(&ctx) < 0) {
@@ -69,7 +69,7 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    printf("✅ MIDI interface claimed. Listening...\n");
+    printf("✅ MIDI interface claimed. Waiting for FPGA to start game...\n");
 
     while (1) {
         result = libusb_bulk_transfer(handle, ENDPOINT_IN, buffer, sizeof(buffer), &transferred, 1000);
@@ -78,8 +78,7 @@ int main() {
             gettimeofday(&tv, NULL);
             uint64_t timestamp_us = (uint64_t)tv.tv_sec * 1000000 + tv.tv_usec;
 
-            // Only send data if game has started
-            int game_started = song_ctrl_ptr[3];  // [3] = game_started_hw
+            int game_started = song_ctrl_ptr[3];  // read game_started_hw
 
             for (int i = 0; i < transferred; i += 4) {
                 if (i + 3 >= transferred) break;
@@ -88,10 +87,11 @@ int main() {
                 uint8_t note = buffer[i + 2];
                 uint8_t velocity = buffer[i + 3];
 
+                // Send only Note On with non-zero velocity
                 if ((status & 0xF0) == 0x90 && velocity > 0) {
                     printf("[%llu us] Note On: Note = %d, Velocity = %d %s\n",
                            timestamp_us, note, velocity,
-                           game_started ? "✅ sent" : "(preview)");
+                           game_started ? "✅ sent" : "(preview only)");
 
                     if (game_started) {
                         uint64_t packet = pack_midi_input(status, note, velocity, timestamp_us);

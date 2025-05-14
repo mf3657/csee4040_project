@@ -28,11 +28,10 @@ module piano_tiles_game_hw (
     output reg  [31:0] user_timestamp,
     output reg         user_input_ready,
 
-    // Physical control inputs
-    input  wire        knob_left,
-    input  wire        knob_right,
-    input  wire        btn_select,
-    input  wire        btn_back,
+    // Physical control inputs mapped to DE1-SoC keys
+    input  wire        key5,   // ← previous song
+    input  wire        key6,   // ← start game
+    input  wire        key7,   // ← next song
     input  wire        song_loaded_done,
 
     // Song selection interface
@@ -48,14 +47,12 @@ module piano_tiles_game_hw (
     reg [31:0] countdown_timer_us;
     reg [31:0] score_display_timer_us;
 
-    // MIDI tile info
     reg [7:0]  current_note;
     reg [7:0]  current_velocity;
     reg [15:0] current_duration;
     reg [31:0] current_timestamp;
     reg [31:0] tile_spawn_timestamp;
 
-    // Gameplay flags and counters
     reg tile_active;
     reg tile_cleared;
     reg key_held;
@@ -84,9 +81,11 @@ module piano_tiles_game_hw (
     GameState state;
 
     // Input edge detection
-    reg btn_select_prev, btn_back_prev, knob_left_prev, knob_right_prev;
+    reg key5_prev, key6_prev, key7_prev;
+    wire key5_rise = key5 && !key5_prev;
+    wire key6_rise = key6 && !key6_prev;
+    wire key7_rise = key7 && !key7_prev;
 
-    // --- Main FSM ---
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             // Reset all states and outputs
@@ -115,27 +114,19 @@ module piano_tiles_game_hw (
             tile_active <= 0;
             tile_cleared <= 0;
 
-            btn_select_prev <= 0;
-            btn_back_prev <= 0;
-            knob_left_prev <= 0;
-            knob_right_prev <= 0;
+            key5_prev <= 0;
+            key6_prev <= 0;
+            key7_prev <= 0;
 
-            // VGA state
             show_countdown <= 0;
             show_score <= 0;
             countdown_display <= 0;
             score_display <= 0;
         end else begin
-            // --- Edge Detection ---
-            wire btn_select_rise = btn_select && !btn_select_prev;
-            wire btn_back_rise   = btn_back   && !btn_back_prev;
-            wire knob_left_rise  = knob_left  && !knob_left_prev;
-            wire knob_right_rise = knob_right && !knob_right_prev;
-
-            btn_select_prev <= btn_select;
-            btn_back_prev   <= btn_back;
-            knob_left_prev  <= knob_left;
-            knob_right_prev <= knob_right;
+            // Update edge detection state
+            key5_prev <= key5;
+            key6_prev <= key6;
+            key7_prev <= key7;
 
             load_song_trigger <= 0; // default
 
@@ -146,12 +137,12 @@ module piano_tiles_game_hw (
                     show_score <= 0;
                     show_countdown <= 0;
 
-                    if (knob_left_rise && song_index > 0)
+                    if (key5_rise && song_index > 0)
                         song_index <= song_index - 1;
-                    else if (knob_right_rise && song_index < 15)
+                    else if (key7_rise && song_index < 15)
                         song_index <= song_index + 1;
 
-                    if (btn_select_rise) begin
+                    if (key6_rise) begin
                         load_song_trigger <= 1;
                         state <= STATE_LOADING;
                     end
@@ -166,8 +157,6 @@ module piano_tiles_game_hw (
                         countdown_timer_us <= 0;
                         state <= STATE_COUNTDOWN;
                     end
-                    if (btn_back_rise)
-                        state <= STATE_MENU;
                 end
 
                 // -------------------------------
@@ -264,7 +253,6 @@ module piano_tiles_game_hw (
                     score_display <= score;
 
                     if (score_display_timer_us >= SCORE_DISPLAY_US) begin
-                        // Reset state
                         state <= STATE_MENU;
                         score <= 0;
                         game_timer_us <= 0;
