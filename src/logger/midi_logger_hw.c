@@ -9,6 +9,7 @@
 
 #include "midi_common.h"
 #include "hw_writer.h"
+#include "fpga_ioctl.h"  // ✅ Include IOCTL command macros
 
 #define VENDOR_ID        0x1235
 #define PRODUCT_ID       0x0102
@@ -25,7 +26,7 @@ int main() {
     printf("🎹 Launchkey MIDI Logger with Kernel Driver Starting...\n");
 
     // Open FPGA kernel device
-    int fd = open(FPGA_DEVICE, O_WRONLY);
+    int fd = open(FPGA_DEVICE, O_RDWR);
     if (fd < 0) {
         perror("❌ Failed to open /dev/fpga_intf");
         return EXIT_FAILURE;
@@ -76,8 +77,8 @@ int main() {
                     printf("[%llu us] Note On: Note = %d, Velocity = %d\n",
                            timestamp_us, note, velocity);
 
-                    if (write(fd, &packet, sizeof(packet)) != sizeof(packet)) {
-                        perror("❌ Failed to write to /dev/fpga_intf");
+                    if (ioctl(fd, IOCTL_SEND_MIDI_EVENT, &packet) < 0) {
+                        perror("❌ ioctl failed to send MIDI packet");
                     }
 
                     usleep(100);  // throttle

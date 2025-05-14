@@ -9,6 +9,7 @@
 
 #include "midi_common.h"
 #include "hw_writer.h"
+#include "fpga_ioctl.h"  // ✅ Add this header to access IOCTL_SEND_MIDI_EVENT
 
 #define MAX_ACTIVE_NOTES 128
 #define FPGA_DEVICE "/dev/fpga_intf"
@@ -108,9 +109,9 @@ void parse_and_send_midi(MidiFile *midi, int fd) {
 
                 uint64_t packet = pack_midi_event(e);
 
-                // Write packet to kernel driver
-                if (write(fd, &packet, sizeof(packet)) != sizeof(packet)) {
-                    perror("❌ Failed to write MIDI packet to FPGA");
+                // ✅ Send packet to kernel driver via ioctl
+                if (ioctl(fd, IOCTL_SEND_MIDI_EVENT, &packet) < 0) {
+                    perror("❌ ioctl failed to send MIDI packet");
                 }
 
                 printf("🎵 Packet Sent - Note: %d | Velocity: %d | Duration: %d ms | Timestamp: %u us\n",
@@ -128,19 +129,15 @@ void parse_and_send_midi(MidiFile *midi, int fd) {
 int main() {
     printf("🎼 Press KEY1 to load and send song1.mid...\n");
 
-    int fd = open(FPGA_DEVICE, O_WRONLY);
+    int fd = open(FPGA_DEVICE, O_RDWR);
     if (fd < 0) {
         perror("❌ Failed to open FPGA device");
         return 1;
     }
 
     while (1) {
-        // Simple polling method for testing. Replace with ioctl or shared flag if needed.
         printf("🔄 Checking KEY1...\n");
-        sleep(1);  // simulate 1-second poll (or integrate ioctl if driver supports it)
-
-        // Simulate KEY1 press detection here
-        // Replace this with actual flag check if implemented via ioctl
+        sleep(1);  // Simulate polling
 
         printf("▶️ Detected KEY1 press. Loading song1.mid\n");
 
@@ -153,7 +150,6 @@ int main() {
             fprintf(stderr, "❌ Failed to load song1.mid\n");
         }
 
-        // Simulate reset
         sleep(1);
     }
 
