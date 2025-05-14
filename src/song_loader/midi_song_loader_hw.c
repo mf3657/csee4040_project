@@ -9,7 +9,7 @@
 
 #include "midi_common.h"
 #include "hardware_defs.h"
-#include "hw_writer.h"  // ✅ use shared FPGA writer
+#include "hw_writer.h"
 
 #define MAX_ACTIVE_NOTES 128
 
@@ -41,7 +41,7 @@ int load_midi(const char *filename, MidiFile *midi) {
     }
 
     midi->division = read16(midi->data + 12);
-    midi->tempo_us_per_quarter = 500000; // default 120 BPM
+    midi->tempo_us_per_quarter = 500000;
     return 0;
 }
 
@@ -108,12 +108,10 @@ void parse_and_send_midi(MidiFile *midi, volatile uint8_t *song_loader_base, vol
 
                 uint64_t packet = pack_midi_event(e);
 
-                // Send 64-bit packet as 8 x 8-bit writes
                 for (int i = 0; i < 8; i++) {
                     song_loader_base[i] = (packet >> (i * 8)) & 0xFF;
                 }
 
-                // Trigger FPGA read
                 song_ctrl_ptr[3] = 1;
 
                 printf("🎵 Packet Sent - Note: %d | Velocity: %d | Duration: %d ms | Timestamp: %u us\n",
@@ -128,9 +126,8 @@ void parse_and_send_midi(MidiFile *midi, volatile uint8_t *song_loader_base, vol
     }
 }
 
-
 int main() {
-    printf("🎼 Waiting for song trigger...\n");
+    printf("🎼 Press KEY1 to load and send song1.mid...\n");
 
     int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
     if (mem_fd < 0) {
@@ -145,44 +142,28 @@ int main() {
         return 1;
     }
 
-    // volatile uint64_t *song_loader_ptr = (uint64_t *)((uint8_t *)virtual_base + SONG_LOADER_OFFSET);
-    volatile uint32_t *song_ctrl_ptr   = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET); // 0: index, 1: trigger, 2: done
+    volatile uint32_t *song_ctrl_ptr = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET);
     volatile uint8_t *song_loader_base = (uint8_t *)((uint8_t *)virtual_base + SONG_LOADER_OFFSET);
 
     while (1) {
-        uint32_t trigger = song_ctrl_ptr[1];  // song_load_trigger
-        uint32_t index = song_ctrl_ptr[0];    // song_index
+        uint32_t trigger = song_ctrl_ptr[1];  // KEY1 press = trigger
 
         if (trigger) {
-            char midi_path[64], mp3_path[64];
-            snprintf(midi_path, sizeof(midi_path), "songs/song%d.mid", index);
-            snprintf(mp3_path, sizeof(mp3_path), "songs/song%d.mp3", index);
-
-            printf("▶️ Loading MIDI: %s\n", midi_path);
+            printf("▶️ Detected KEY1 press. Loading song1.mid\n");
 
             MidiFile midi;
-            if (load_midi(midi_path, &midi) == 0) {
+            if (load_midi("songs/song1.mid", &midi) == 0) {
                 parse_and_send_midi(&midi, song_loader_base, song_ctrl_ptr);
                 free(midi.data);
-                song_ctrl_ptr[2] = 1;  // song_loaded_done
-                printf("✅ Song loaded and sent to FPGA.\n");
-
-                // 🔊 Trigger MP3 playback
-                pid_t pid = fork();
-                if (pid == 0) {
-                    execlp("mpg123", "mpg123", mp3_path, NULL);
-                    perror("❌ Failed to launch mpg123");
-                    exit(1);
-                } else if (pid < 0) {
-                    perror("❌ Fork failed");
-                } else {
-                    printf("🔊 MP3 playback started: %s\n", mp3_path);
-                }
-
+                song_ctrl_ptr[2] = 1;  // Done flag
+                printf("✅ song1.mid loaded and packets sent.\n");
             } else {
                 song_ctrl_ptr[2] = 0;
-                fprintf(stderr, "❌ Failed to load or parse song %d.\n", index);
+                fprintf(stderr, "❌ Failed to load song1.mid\n");
             }
+
+            // Reset KEY1 trigger
+            song_ctrl_ptr[1] = 0;
         }
 
         usleep(50000);  // check every 50ms
