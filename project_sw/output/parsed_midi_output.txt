@@ -1,0 +1,397 @@
+REST     : --------  | Timestamp: 0 us | Duration: 190 ms
+MidiWord: 0x451EF400  | Timestamp: 7614583 us | Note: 69 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x431EF400  | Timestamp: 8114583 us | Note: 67 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x421EFA00  | Timestamp: 8614583 us | Note: 66 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x3E1EFA00  | Timestamp: 8864583 us | Note: 62 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x3D1EFA00  | Timestamp: 9114583 us | Note: 61 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x3E1EFA00  | Timestamp: 9364583 us | Note: 62 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x471EF400  | Timestamp: 9614583 us | Note: 71 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x491EFA00  | Timestamp: 10114583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4A1EFA00  | Timestamp: 10364583 us | Note: 74 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4A1EE800  | Timestamp: 10614583 us | Note: 74 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x4C1EF400  | Timestamp: 11614583 us | Note: 76 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4A1EFA00  | Timestamp: 12114583 us | Note: 74 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4C1EFA00  | Timestamp: 12364583 us | Note: 76 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4E1EF400  | Timestamp: 12614583 us | Note: 78 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4A1EF400  | Timestamp: 13114583 us | Note: 74 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4F1EE800  | Timestamp: 13614583 us | Note: 79 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x451EF400  | Timestamp: 14614583 us | Note: 69 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4A1EF400  | Timestamp: 15114583 us | Note: 74 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4C1EE800  | Timestamp: 15614583 us | Note: 76 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x4A1ED000  | Timestamp: 16614583 us | Note: 74 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x4A1EE800  | Timestamp: 18614583 us | Note: 74 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x491EE800  | Timestamp: 19614583 us | Note: 73 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x4A1ED000  | Timestamp: 20614583 us | Note: 74 | Velocity: 30 | Duration: 208 ms
+REST     : --------  | Timestamp: 22614583 us | Duration: 184 ms
+MidiWord: 0x421EF400  | Timestamp: 25614583 us | Note: 66 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x451EF400  | Timestamp: 26114583 us | Note: 69 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x471EF400  | Timestamp: 26614583 us | Note: 71 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4A1EF400  | Timestamp: 27114583 us | Note: 74 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4C1EFA00  | Timestamp: 27614583 us | Note: 76 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4A1EFA00  | Timestamp: 27864583 us | Note: 74 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EF400  | Timestamp: 28114583 us | Note: 73 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4A1EA000  | Timestamp: 28614583 us | Note: 74 | Velocity: 30 | Duration: 160 ms
+REST     : --------  | Timestamp: 32614583 us | Duration: 208 ms
+MidiWord: 0x451ED000  | Timestamp: 34614583 us | Note: 69 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x461ED000  | Timestamp: 36614583 us | Note: 70 | Velocity: 30 | Duration: 208 ms
+REST     : --------  | Timestamp: 38614583 us | Duration: 244 ms
+MidiWord: 0x4D1EF400  | Timestamp: 39114583 us | Note: 77 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4C1EF400  | Timestamp: 39614583 us | Note: 76 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4A1EFA00  | Timestamp: 40114583 us | Note: 74 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4C1EFA00  | Timestamp: 40364583 us | Note: 76 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4D1EB800  | Timestamp: 40614583 us | Note: 77 | Velocity: 30 | Duration: 184 ms
+MidiWord: 0x4C1EB800  | Timestamp: 43614583 us | Note: 76 | Velocity: 30 | Duration: 184 ms
+REST     : --------  | Timestamp: 46614583 us | Duration: 136 ms
+MidiWord: 0x4F1EE800  | Timestamp: 51614583 us | Note: 79 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x4C1ED000  | Timestamp: 52614583 us | Note: 76 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x4D1ED000  | Timestamp: 54614583 us | Note: 77 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x4C1ED000  | Timestamp: 56614583 us | Note: 76 | Velocity: 30 | Duration: 208 ms
+REST     : --------  | Timestamp: 58614583 us | Duration: 244 ms
+MidiWord: 0x481EF400  | Timestamp: 59114583 us | Note: 72 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x4A1EF400  | Timestamp: 59614583 us | Note: 74 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x471EF400  | Timestamp: 60114583 us | Note: 71 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x481ED000  | Timestamp: 60614583 us | Note: 72 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x451EDC00  | Timestamp: 62614583 us | Note: 69 | Velocity: 30 | Duration: 220 ms
+MidiWord: 0x481EE800  | Timestamp: 64114583 us | Note: 72 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x431EBE00  | Timestamp: 65114583 us | Note: 67 | Velocity: 30 | Duration: 190 ms
+REST     : --------  | Timestamp: 67864583 us | Duration: 172 ms
+MidiWord: 0x451ED000  | Timestamp: 71364583 us | Note: 69 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x481E7D00  | Timestamp: 73364583 us | Note: 72 | Velocity: 30 | Duration: 125 ms
+MidiWord: 0x4A1E7D00  | Timestamp: 73489583 us | Note: 74 | Velocity: 30 | Duration: 125 ms
+MidiWord: 0x4C1EEE00  | Timestamp: 73614583 us | Note: 76 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x451EC400  | Timestamp: 74364583 us | Note: 69 | Velocity: 30 | Duration: 196 ms
+REST     : --------  | Timestamp: 76864583 us | Duration: 198 ms
+MidiWord: 0x491EEE00  | Timestamp: 100614583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EEE00  | Timestamp: 101364583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EEE00  | Timestamp: 102114583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EEE00  | Timestamp: 102864583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x481EDC00  | Timestamp: 103614583 us | Note: 72 | Velocity: 30 | Duration: 220 ms
+MidiWord: 0x491EEE00  | Timestamp: 105114583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EEE00  | Timestamp: 105864583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EEE00  | Timestamp: 106614583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EEE00  | Timestamp: 107364583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x481EEE00  | Timestamp: 108114583 us | Note: 72 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x481EFA00  | Timestamp: 108864583 us | Note: 72 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 109114583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 109364583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EEE00  | Timestamp: 109614583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EEE00  | Timestamp: 110364583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x481EEE00  | Timestamp: 111114583 us | Note: 72 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x481EFA00  | Timestamp: 111864583 us | Note: 72 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 112114583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x461EFA00  | Timestamp: 112364583 us | Note: 70 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EEE00  | Timestamp: 112614583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EFA00  | Timestamp: 113364583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 113614583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 113864583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x481EFA00  | Timestamp: 114114583 us | Note: 72 | Velocity: 30 | Duration: 250 ms
+REST     : --------  | Timestamp: 114364583 us | Duration: 125 ms
+MidiWord: 0x481E7D00  | Timestamp: 114489583 us | Note: 72 | Velocity: 30 | Duration: 125 ms
+MidiWord: 0x481EFA00  | Timestamp: 114614583 us | Note: 72 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x481EFA00  | Timestamp: 114864583 us | Note: 72 | Velocity: 30 | Duration: 250 ms
+REST     : --------  | Timestamp: 115114583 us | Duration: 125 ms
+MidiWord: 0x481E7D00  | Timestamp: 115239583 us | Note: 72 | Velocity: 30 | Duration: 125 ms
+MidiWord: 0x481EFA00  | Timestamp: 115364583 us | Note: 72 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 115614583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+REST     : --------  | Timestamp: 115864583 us | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 116114583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 116364583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x411EFA00  | Timestamp: 116614583 us | Note: 65 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EFA00  | Timestamp: 116864583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4B1EFA00  | Timestamp: 117114583 us | Note: 75 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x451EFA00  | Timestamp: 117364583 us | Note: 69 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4B1EFA00  | Timestamp: 117614583 us | Note: 75 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4D1EFA00  | Timestamp: 117864583 us | Note: 77 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x441EFA00  | Timestamp: 118114583 us | Note: 68 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x4D1EFA00  | Timestamp: 118364583 us | Note: 77 | Velocity: 30 | Duration: 250 ms
+REST     : --------  | Timestamp: 118614583 us | Duration: 196 ms
+MidiWord: 0x461EFA00  | Timestamp: 121114583 us | Note: 70 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x481EFA00  | Timestamp: 121364583 us | Note: 72 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491E7700  | Timestamp: 121614583 us | Note: 73 | Velocity: 30 | Duration: 119 ms
+MidiWord: 0x461E7700  | Timestamp: 121989583 us | Note: 70 | Velocity: 30 | Duration: 119 ms
+MidiWord: 0x4B1E7700  | Timestamp: 122364583 us | Note: 75 | Velocity: 30 | Duration: 119 ms
+MidiWord: 0x4E1E7700  | Timestamp: 122739583 us | Note: 78 | Velocity: 30 | Duration: 119 ms
+MidiWord: 0x4D1ECA00  | Timestamp: 123114583 us | Note: 77 | Velocity: 30 | Duration: 202 ms
+MidiWord: 0x481EEE00  | Timestamp: 125364583 us | Note: 72 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x461EE800  | Timestamp: 126114583 us | Note: 70 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x441EFA00  | Timestamp: 127114583 us | Note: 68 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x421EFA00  | Timestamp: 127364583 us | Note: 66 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x441EEE00  | Timestamp: 127614583 us | Note: 68 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x491EEE00  | Timestamp: 128364583 us | Note: 73 | Velocity: 30 | Duration: 238 ms
+MidiWord: 0x4B1EE800  | Timestamp: 129114583 us | Note: 75 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x491EFA00  | Timestamp: 130114583 us | Note: 73 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x481EFA00  | Timestamp: 130364583 us | Note: 72 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x491EB800  | Timestamp: 130614583 us | Note: 73 | Velocity: 30 | Duration: 184 ms
+REST     : --------  | Timestamp: 133614583 us | Duration: 208 ms
+MidiWord: 0x441ED000  | Timestamp: 167614583 us | Note: 68 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x411EE800  | Timestamp: 169614583 us | Note: 65 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x3F1EFA00  | Timestamp: 170489583 us | Note: 63 | Velocity: 30 | Duration: 250 ms
+MidiWord: 0x441ED000  | Timestamp: 170614583 us | Note: 68 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x491EE800  | Timestamp: 172614583 us | Note: 73 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x4B1EA000  | Timestamp: 173614583 us | Note: 75 | Velocity: 30 | Duration: 160 ms
+REST     : --------  | Timestamp: 177614583 us | Duration: 160 ms
+MidiWord: 0x3D1EE800  | Timestamp: 181614583 us | Note: 61 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x3D1EE800  | Timestamp: 182614583 us | Note: 61 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x3F1EE800  | Timestamp: 183614583 us | Note: 63 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x3D1EF400  | Timestamp: 184614583 us | Note: 61 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x3F1EF400  | Timestamp: 185114583 us | Note: 63 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x411EE800  | Timestamp: 185614583 us | Note: 65 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x3D1EE800  | Timestamp: 186614583 us | Note: 61 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x461EE800  | Timestamp: 187614583 us | Note: 70 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x441EF400  | Timestamp: 188614583 us | Note: 68 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x421EF400  | Timestamp: 189114583 us | Note: 66 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x441EE800  | Timestamp: 189614583 us | Note: 68 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x411EE800  | Timestamp: 190614583 us | Note: 65 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x3F1EE800  | Timestamp: 191614583 us | Note: 63 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x3D1EF400  | Timestamp: 192614583 us | Note: 61 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x3F1EF400  | Timestamp: 193114583 us | Note: 63 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x411EE800  | Timestamp: 193614583 us | Note: 65 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x3D1EE800  | Timestamp: 194614583 us | Note: 61 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x461EE800  | Timestamp: 195614583 us | Note: 70 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x441EF400  | Timestamp: 196614583 us | Note: 68 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x421EF400  | Timestamp: 197114583 us | Note: 66 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x441EE800  | Timestamp: 197614583 us | Note: 68 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x411EF400  | Timestamp: 198614583 us | Note: 65 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x461EF400  | Timestamp: 199114583 us | Note: 70 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x441ED000  | Timestamp: 199614583 us | Note: 68 | Velocity: 30 | Duration: 208 ms
+REST     : --------  | Timestamp: 201614583 us | Duration: 160 ms
+MidiWord: 0x441EE800  | Timestamp: 205614583 us | Note: 68 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x491EE800  | Timestamp: 206614583 us | Note: 73 | Velocity: 30 | Duration: 232 ms
+MidiWord: 0x4B1ED000  | Timestamp: 207614583 us | Note: 75 | Velocity: 30 | Duration: 208 ms
+MidiWord: 0x491EA000  | Timestamp: 209614583 us | Note: 73 | Velocity: 30 | Duration: 160 ms
+REST     : --------  | Timestamp: 213614583 us | Duration: 160 ms
+MidiWord: 0x491EDC00  | Timestamp: 217614583 us | Note: 73 | Velocity: 30 | Duration: 220 ms
+MidiWord: 0x481EF400  | Timestamp: 219114583 us | Note: 72 | Velocity: 30 | Duration: 244 ms
+MidiWord: 0x491E4000  | Timestamp: 219614583 us | Note: 73 | Velocity: 30 | Duration: 64 ms
+REST     : --------  | Timestamp: 227614583 us | Duration: 208 ms
+MidiWord: 0x491EA000  | Timestamp: 229614583 us | Note: 73 | Velocity: 30 | Duration: 160 ms
+REST     : --------  | Timestamp: 233614583 us | Duration: 88 ms
+MidiWord: 0x421DF400  | Timestamp: 237799479 us | Note: 66 | Velocity: 29 | Duration: 244 ms
+MidiWord: 0x451DF400  | Timestamp: 238299479 us | Note: 69 | Velocity: 29 | Duration: 244 ms
+MidiWord: 0x431DF400  | Timestamp: 238799479 us | Note: 67 | Velocity: 29 | Duration: 244 ms
+MidiWord: 0x431DF400  | Timestamp: 239299479 us | Note: 67 | Velocity: 29 | Duration: 244 ms
+MidiWord: 0x451DF400  | Timestamp: 239799479 us | Note: 69 | Velocity: 29 | Duration: 244 ms
+MidiWord: 0x401DF400  | Timestamp: 240299479 us | Note: 64 | Velocity: 29 | Duration: 244 ms
+MidiWord: 0x421DD000  | Timestamp: 240799479 us | Note: 66 | Velocity: 29 | Duration: 208 ms
+MidiWord: 0x431DD000  | Timestamp: 242799479 us | Note: 67 | Velocity: 29 | Duration: 208 ms
+REST     : --------  | Timestamp: 244799479 us | Duration: 80 ms
+MidiWord: 0x481DE800  | Timestamp: 262799479 us | Note: 72 | Velocity: 29 | Duration: 232 ms
+REST     : --------  | Timestamp: 263799479 us | Duration: 244 ms
+MidiWord: 0x471DF400  | Timestamp: 264299479 us | Note: 71 | Velocity: 29 | Duration: 244 ms
+MidiWord: 0x481DD000  | Timestamp: 264799479 us | Note: 72 | Velocity: 29 | Duration: 208 ms
+MidiWord: 0x481DD000  | Timestamp: 266799479 us | Note: 72 | Velocity: 29 | Duration: 208 ms
+MidiWord: 0x481DD000  | Timestamp: 268799479 us | Note: 72 | Velocity: 29 | Duration: 208 ms
+REST     : --------  | Timestamp: 270799479 us | Duration: 160 ms
+MidiWord: 0x3C1DD000  | Timestamp: 274799479 us | Note: 60 | Velocity: 29 | Duration: 208 ms
+MidiWord: 0x3C1DB200  | Timestamp: 276799479 us | Note: 60 | Velocity: 29 | Duration: 178 ms
+REST     : --------  | Timestamp: 280049479 us | Duration: 172 ms
+MidiWord: 0x4C1DDC00  | Timestamp: 283549479 us | Note: 76 | Velocity: 29 | Duration: 220 ms
+MidiWord: 0x451DEE00  | Timestamp: 285049479 us | Note: 69 | Velocity: 29 | Duration: 238 ms
+REST     : --------  | Timestamp: 285799479 us | Duration: 238 ms
+MidiWord: 0x451DC400  | Timestamp: 286549479 us | Note: 69 | Velocity: 29 | Duration: 196 ms
+REST     : --------  | Timestamp: 289049479 us | Duration: 90 ms
+MidiWord: 0x421DEE00  | Timestamp: 317299479 us | Note: 66 | Velocity: 29 | Duration: 238 ms
+MidiWord: 0x441DEE00  | Timestamp: 318049479 us | Note: 68 | Velocity: 29 | Duration: 238 ms
+MidiWord: 0x461DDC00  | Timestamp: 318799479 us | Note: 70 | Velocity: 29 | Duration: 220 ms
+MidiWord: 0x461DDC00  | Timestamp: 320299479 us | Note: 70 | Velocity: 29 | Duration: 220 ms
+REST     : --------  | Timestamp: 321799479 us | Duration: 224 ms
+MidiWord: 0x461DDC00  | Timestamp: 333799479 us | Note: 70 | Velocity: 29 | Duration: 220 ms
+MidiWord: 0x441DCA00  | Timestamp: 335299479 us | Note: 68 | Velocity: 29 | Duration: 202 ms
+MidiWord: 0x411DEE00  | Timestamp: 337549479 us | Note: 65 | Velocity: 29 | Duration: 238 ms
+MidiWord: 0x421DDC00  | Timestamp: 338299479 us | Note: 66 | Velocity: 29 | Duration: 220 ms
+REST     : --------  | Timestamp: 339799479 us | Duration: 56 ms
+MidiWord: 0x4B1DFA00  | Timestamp: 358799479 us | Note: 75 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 359049479 us | Duration: 250 ms
+MidiWord: 0x421DFA00  | Timestamp: 359299479 us | Note: 66 | Velocity: 29 | Duration: 250 ms
+MidiWord: 0x501D7D00  | Timestamp: 359549479 us | Note: 80 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x4E1D7D00  | Timestamp: 359674479 us | Note: 78 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x501DFA00  | Timestamp: 359799479 us | Note: 80 | Velocity: 29 | Duration: 250 ms
+MidiWord: 0x491D7D00  | Timestamp: 360049479 us | Note: 73 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x481D7D00  | Timestamp: 360174479 us | Note: 72 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x491DFA00  | Timestamp: 360299479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 360549479 us | Duration: 238 ms
+MidiWord: 0x4B1DFA00  | Timestamp: 361299479 us | Note: 75 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 361549479 us | Duration: 244 ms
+MidiWord: 0x491DFA00  | Timestamp: 362049479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 362299479 us | Duration: 250 ms
+MidiWord: 0x491DFA00  | Timestamp: 362549479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 362799479 us | Duration: 250 ms
+MidiWord: 0x491D7D00  | Timestamp: 363049479 us | Note: 73 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x481D7D00  | Timestamp: 363174479 us | Note: 72 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x491DFA00  | Timestamp: 363299479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+MidiWord: 0x491D7D00  | Timestamp: 363549479 us | Note: 73 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x481D7D00  | Timestamp: 363674479 us | Note: 72 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x4B1DFA00  | Timestamp: 363799479 us | Note: 75 | Velocity: 29 | Duration: 250 ms
+MidiWord: 0x491D7D00  | Timestamp: 364049479 us | Note: 73 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x481D7D00  | Timestamp: 364174479 us | Note: 72 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x491DFA00  | Timestamp: 364299479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 364549479 us | Duration: 244 ms
+MidiWord: 0x491DFA00  | Timestamp: 365049479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+MidiWord: 0x491DFA00  | Timestamp: 365299479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+MidiWord: 0x481DFA00  | Timestamp: 365549479 us | Note: 72 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 365799479 us | Duration: 106 ms
+MidiWord: 0x491D7D00  | Timestamp: 372049479 us | Note: 73 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x491D7D00  | Timestamp: 372174479 us | Note: 73 | Velocity: 29 | Duration: 125 ms
+MidiWord: 0x491DFA00  | Timestamp: 372299479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+MidiWord: 0x491DFA00  | Timestamp: 372549479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+MidiWord: 0x4B1DFA00  | Timestamp: 372799479 us | Note: 75 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 373049479 us | Duration: 250 ms
+MidiWord: 0x421DFA00  | Timestamp: 373299479 us | Note: 66 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 373549479 us | Duration: 250 ms
+MidiWord: 0x461DFA00  | Timestamp: 373799479 us | Note: 70 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 374049479 us | Duration: 202 ms
+MidiWord: 0x491DFA00  | Timestamp: 376299479 us | Note: 73 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 376549479 us | Duration: 250 ms
+MidiWord: 0x4B1DFA00  | Timestamp: 376799479 us | Note: 75 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 377049479 us | Duration: 250 ms
+MidiWord: 0x441DFA00  | Timestamp: 377299479 us | Note: 68 | Velocity: 29 | Duration: 250 ms
+REST     : --------  | Timestamp: 377549479 us | Duration: 218 ms
+MidiWord: 0x461DA000  | Timestamp: 389799479 us | Note: 70 | Velocity: 29 | Duration: 160 ms
+MidiWord: 0x4E1DA000  | Timestamp: 393799479 us | Note: 78 | Velocity: 29 | Duration: 160 ms
+REST     : --------  | Timestamp: 397799479 us | Duration: 96 ms
+MidiWord: 0x441DA000  | Timestamp: 425799479 us | Note: 68 | Velocity: 29 | Duration: 160 ms
+MidiWord: 0x441DD000  | Timestamp: 429799479 us | Note: 68 | Velocity: 29 | Duration: 208 ms
+MidiWord: 0x461DDC00  | Timestamp: 431799479 us | Note: 70 | Velocity: 29 | Duration: 220 ms
+MidiWord: 0x3C1DF400  | Timestamp: 433299479 us | Note: 60 | Velocity: 29 | Duration: 244 ms
+MidiWord: 0x441D7000  | Timestamp: 433799479 us | Note: 68 | Velocity: 29 | Duration: 112 ms
+MidiWord: 0x461DD000  | Timestamp: 439799479 us | Note: 70 | Velocity: 29 | Duration: 208 ms
+MidiWord: 0x441DA000  | Timestamp: 441799479 us | Note: 68 | Velocity: 29 | Duration: 160 ms
+REST     : --------  | Timestamp: 445799479 us | Duration: 113 ms
+MidiWord: 0x3C09D000  | Timestamp: 519385416 us | Note: 60 | Velocity: 9 | Duration: 208 ms
+MidiWord: 0x3C09B200  | Timestamp: 521385416 us | Note: 60 | Velocity: 9 | Duration: 178 ms
+REST     : --------  | Timestamp: 524635416 us | Duration: 54 ms
+MidiWord: 0x3F09EE00  | Timestamp: 554385416 us | Note: 63 | Velocity: 9 | Duration: 238 ms
+MidiWord: 0x4109EE00  | Timestamp: 555135416 us | Note: 65 | Velocity: 9 | Duration: 238 ms
+MidiWord: 0x4109DC00  | Timestamp: 555885416 us | Note: 65 | Velocity: 9 | Duration: 220 ms
+MidiWord: 0x4609EE00  | Timestamp: 557385416 us | Note: 70 | Velocity: 9 | Duration: 238 ms
+MidiWord: 0x4609EE00  | Timestamp: 558135416 us | Note: 70 | Velocity: 9 | Duration: 238 ms
+MidiWord: 0x4609EE00  | Timestamp: 558885416 us | Note: 70 | Velocity: 9 | Duration: 238 ms
+MidiWord: 0x4609EE00  | Timestamp: 559635416 us | Note: 70 | Velocity: 9 | Duration: 238 ms
+REST     : --------  | Timestamp: 560385416 us | Duration: 142 ms
+MidiWord: 0x3E0BB200  | Timestamp: 593295572 us | Note: 62 | Velocity: 11 | Duration: 178 ms
+REST     : --------  | Timestamp: 596545572 us | Duration: 214 ms
+MidiWord: 0x3E0BB800  | Timestamp: 598295572 us | Note: 62 | Velocity: 11 | Duration: 184 ms
+MidiWord: 0x3D0BF400  | Timestamp: 601295572 us | Note: 61 | Velocity: 11 | Duration: 244 ms
+REST     : --------  | Timestamp: 601795572 us | Duration: 208 ms
+MidiWord: 0x450BF400  | Timestamp: 603795572 us | Note: 69 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x450BD000  | Timestamp: 604295572 us | Note: 69 | Velocity: 11 | Duration: 208 ms
+REST     : --------  | Timestamp: 606295572 us | Duration: 225 ms
+MidiWord: 0x4610F400  | Timestamp: 639800781 us | Note: 70 | Velocity: 16 | Duration: 244 ms
+REST     : --------  | Timestamp: 640300781 us | Duration: 196 ms
+MidiWord: 0x4610E800  | Timestamp: 642800781 us | Note: 70 | Velocity: 16 | Duration: 232 ms
+MidiWord: 0x4610F400  | Timestamp: 643800781 us | Note: 70 | Velocity: 16 | Duration: 244 ms
+MidiWord: 0x4610F400  | Timestamp: 644300781 us | Note: 70 | Velocity: 16 | Duration: 244 ms
+REST     : --------  | Timestamp: 644800781 us | Duration: 208 ms
+MidiWord: 0x4610E800  | Timestamp: 646800781 us | Note: 70 | Velocity: 16 | Duration: 232 ms
+MidiWord: 0x4610F400  | Timestamp: 647800781 us | Note: 70 | Velocity: 16 | Duration: 244 ms
+MidiWord: 0x4610F400  | Timestamp: 648300781 us | Note: 70 | Velocity: 16 | Duration: 244 ms
+REST     : --------  | Timestamp: 648800781 us | Duration: 160 ms
+MidiWord: 0x4710D000  | Timestamp: 652800781 us | Note: 71 | Velocity: 16 | Duration: 208 ms
+REST     : --------  | Timestamp: 654800781 us | Duration: 208 ms
+MidiWord: 0x3C10E800  | Timestamp: 656800781 us | Note: 60 | Velocity: 16 | Duration: 232 ms
+MidiWord: 0x4710F400  | Timestamp: 657800781 us | Note: 71 | Velocity: 16 | Duration: 244 ms
+MidiWord: 0x4710F400  | Timestamp: 658300781 us | Note: 71 | Velocity: 16 | Duration: 244 ms
+REST     : --------  | Timestamp: 658800781 us | Duration: 1 ms
+MidiWord: 0x440BA000  | Timestamp: 695666666 us | Note: 68 | Velocity: 11 | Duration: 160 ms
+MidiWord: 0x440BA000  | Timestamp: 699666666 us | Note: 68 | Velocity: 11 | Duration: 160 ms
+MidiWord: 0x3D0BFA00  | Timestamp: 703666666 us | Note: 61 | Velocity: 11 | Duration: 250 ms
+MidiWord: 0x3F0BFA00  | Timestamp: 703916666 us | Note: 63 | Velocity: 11 | Duration: 250 ms
+MidiWord: 0x3D0BFA00  | Timestamp: 704166666 us | Note: 61 | Velocity: 11 | Duration: 250 ms
+MidiWord: 0x460BFA00  | Timestamp: 704416666 us | Note: 70 | Velocity: 11 | Duration: 250 ms
+MidiWord: 0x440B5800  | Timestamp: 704666666 us | Note: 68 | Velocity: 11 | Duration: 88 ms
+MidiWord: 0x440BE800  | Timestamp: 711666666 us | Note: 68 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x460BE800  | Timestamp: 712666666 us | Note: 70 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x440BE800  | Timestamp: 713666666 us | Note: 68 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3F0BE800  | Timestamp: 714666666 us | Note: 63 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x440BE800  | Timestamp: 715666666 us | Note: 68 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x460BE800  | Timestamp: 716666666 us | Note: 70 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x440BE800  | Timestamp: 717666666 us | Note: 68 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3C0BF400  | Timestamp: 718666666 us | Note: 60 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x3C0BF400  | Timestamp: 719166666 us | Note: 60 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x3D0BB800  | Timestamp: 719666666 us | Note: 61 | Velocity: 11 | Duration: 184 ms
+MidiWord: 0x3F0BF400  | Timestamp: 722666666 us | Note: 63 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x3C0BF400  | Timestamp: 723166666 us | Note: 60 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x3D0BD000  | Timestamp: 723666666 us | Note: 61 | Velocity: 11 | Duration: 208 ms
+MidiWord: 0x3D0BE800  | Timestamp: 725666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3C0BE800  | Timestamp: 726666666 us | Note: 60 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BD000  | Timestamp: 727666666 us | Note: 61 | Velocity: 11 | Duration: 208 ms
+MidiWord: 0x3D0BE800  | Timestamp: 729666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 730666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3F0BB800  | Timestamp: 731666666 us | Note: 63 | Velocity: 11 | Duration: 184 ms
+MidiWord: 0x3C0BE800  | Timestamp: 734666666 us | Note: 60 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BA000  | Timestamp: 735666666 us | Note: 61 | Velocity: 11 | Duration: 160 ms
+MidiWord: 0x3D0BD000  | Timestamp: 739666666 us | Note: 61 | Velocity: 11 | Duration: 208 ms
+MidiWord: 0x3F0BE800  | Timestamp: 741666666 us | Note: 63 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BF400  | Timestamp: 742666666 us | Note: 61 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x3F0BF400  | Timestamp: 743166666 us | Note: 63 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x3D0BE800  | Timestamp: 743666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 744666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x420BE800  | Timestamp: 745666666 us | Note: 66 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 746666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 747666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 748666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3F0BE800  | Timestamp: 749666666 us | Note: 63 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BF400  | Timestamp: 750666666 us | Note: 61 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x440BF400  | Timestamp: 751166666 us | Note: 68 | Velocity: 11 | Duration: 244 ms
+MidiWord: 0x3D0BE800  | Timestamp: 751666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 752666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x420BE800  | Timestamp: 753666666 us | Note: 66 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 754666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x410BE800  | Timestamp: 755666666 us | Note: 65 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 756666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3F0BD000  | Timestamp: 757666666 us | Note: 63 | Velocity: 11 | Duration: 208 ms
+MidiWord: 0x410BE800  | Timestamp: 759666666 us | Note: 65 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 760666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x420BE800  | Timestamp: 761666666 us | Note: 66 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 762666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x410BE800  | Timestamp: 763666666 us | Note: 65 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3D0BE800  | Timestamp: 764666666 us | Note: 61 | Velocity: 11 | Duration: 232 ms
+MidiWord: 0x3F0BD000  | Timestamp: 765666666 us | Note: 63 | Velocity: 11 | Duration: 208 ms
+MidiWord: 0x3D0BA000  | Timestamp: 767666666 us | Note: 61 | Velocity: 11 | Duration: 160 ms
+MidiWord: 0x3D0B8000  | Timestamp: 771666666 us | Note: 61 | Velocity: 11 | Duration: 128 ms
+REST     : --------  | Timestamp: 787666666 us | Duration: 240 ms
+REST     : --------  | Timestamp: 787666666 us | Duration: 244 ms
+REST     : --------  | Timestamp: 787666666 us | Duration: 115 ms
+REST     : --------  | Timestamp: 787666666 us | Duration: 3 ms
+REST     : --------  | Timestamp: 787666666 us | Duration: 155 ms
+MidiWord: 0x410EE800  | Timestamp: 803694010 us | Note: 65 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EB800  | Timestamp: 804694010 us | Note: 68 | Velocity: 14 | Duration: 184 ms
+MidiWord: 0x440EE800  | Timestamp: 807694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x460EA000  | Timestamp: 808694010 us | Note: 70 | Velocity: 14 | Duration: 160 ms
+MidiWord: 0x420EA000  | Timestamp: 812694010 us | Note: 66 | Velocity: 14 | Duration: 160 ms
+MidiWord: 0x440EE800  | Timestamp: 816694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EE800  | Timestamp: 817694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x420EE800  | Timestamp: 818694010 us | Note: 66 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x420EE800  | Timestamp: 819694010 us | Note: 66 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EE800  | Timestamp: 820694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EE800  | Timestamp: 821694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EE800  | Timestamp: 822694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EF400  | Timestamp: 823694010 us | Note: 68 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x440EF400  | Timestamp: 824194010 us | Note: 68 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x460EE800  | Timestamp: 824694010 us | Note: 70 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x460EE800  | Timestamp: 825694010 us | Note: 70 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x460EE800  | Timestamp: 826694010 us | Note: 70 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x460EE800  | Timestamp: 827694010 us | Note: 70 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EE800  | Timestamp: 828694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EF400  | Timestamp: 829694010 us | Note: 68 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x440EF400  | Timestamp: 830194010 us | Note: 68 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x440ED000  | Timestamp: 830694010 us | Note: 68 | Velocity: 14 | Duration: 208 ms
+MidiWord: 0x460EE800  | Timestamp: 832694010 us | Note: 70 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x460EE800  | Timestamp: 833694010 us | Note: 70 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x460EE800  | Timestamp: 834694010 us | Note: 70 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x460EE800  | Timestamp: 835694010 us | Note: 70 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EE800  | Timestamp: 836694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440EE800  | Timestamp: 837694010 us | Note: 68 | Velocity: 14 | Duration: 232 ms
+MidiWord: 0x440ED000  | Timestamp: 838694010 us | Note: 68 | Velocity: 14 | Duration: 208 ms
+MidiWord: 0x3D0EF400  | Timestamp: 840694010 us | Note: 61 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x3C0EF400  | Timestamp: 841194010 us | Note: 60 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x440EF400  | Timestamp: 841694010 us | Note: 68 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x460EF400  | Timestamp: 842194010 us | Note: 70 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x460ED000  | Timestamp: 842694010 us | Note: 70 | Velocity: 14 | Duration: 208 ms
+MidiWord: 0x440EA000  | Timestamp: 844694010 us | Note: 68 | Velocity: 14 | Duration: 160 ms
+MidiWord: 0x440EDC00  | Timestamp: 848694010 us | Note: 68 | Velocity: 14 | Duration: 220 ms
+MidiWord: 0x440EF400  | Timestamp: 850194010 us | Note: 68 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x460EDC00  | Timestamp: 850694010 us | Note: 70 | Velocity: 14 | Duration: 220 ms
+MidiWord: 0x3C0EF400  | Timestamp: 852194010 us | Note: 60 | Velocity: 14 | Duration: 244 ms
+MidiWord: 0x440E7000  | Timestamp: 852694010 us | Note: 68 | Velocity: 14 | Duration: 112 ms
+MidiWord: 0x440ED000  | Timestamp: 858694010 us | Note: 68 | Velocity: 14 | Duration: 208 ms

@@ -1,0 +1,22 @@
+make
+
+# To display Kernel debugging messages on the console
+echo 8 > /proc/sys/kernel/printk
+
+# Alternately,
+dmesg | tail -7
+
+insmod fpga_intf.ko
+lsmod
+./main
+
+rmmod fpga_intf
+
+Once the module is loaded, look for information about it with
+
+lsmod
+cat /proc/iomem
+ls /sys/module/fpga_intf
+ls /sys/devices/soc.0
+ls /sys/class/misc/fpga_intf
+ls /sys/bus/drivers
