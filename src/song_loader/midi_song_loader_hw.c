@@ -45,7 +45,7 @@ int load_midi(const char *filename, MidiFile *midi) {
     return 0;
 }
 
-void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
+void parse_and_send_midi(MidiFile *midi, volatile uint8_t *song_loader_base, volatile uint32_t *song_ctrl_ptr) {
     const uint8_t *ptr = midi->data + 14;
     if (memcmp(ptr, "MTrk", 4) != 0) {
         fprintf(stderr, "❌ No MTrk chunk found\n");
@@ -59,12 +59,10 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
     double micros_per_tick = (double)midi->tempo_us_per_quarter / midi->division;
 
     while (ptr < midi->data + midi->size) {
-        // --- Read delta time and update time ---
         uint32_t delta_ticks = read_variable_length(&ptr);
         current_ticks += delta_ticks;
         uint32_t current_us = (uint32_t)(current_ticks * micros_per_tick);
 
-        // --- Get status byte ---
         uint8_t status = *ptr;
         if (status < 0x80) {
             status = last_status;
@@ -73,7 +71,6 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
             last_status = status;
         }
 
-        // --- Tempo Change Meta Event ---
         if (status == 0xFF && ptr[0] == 0x51 && ptr[1] == 0x03) {
             ptr += 2;
             uint32_t new_tempo = (ptr[0] << 16) | (ptr[1] << 8) | ptr[2];
@@ -84,7 +81,6 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
             continue;
         }
 
-        // --- Note On ---
         if ((status & 0xF0) == 0x90 && ptr[1] > 0) {
             uint8_t note = transpose_note(ptr[0]);
             uint8_t velocity = ptr[1];
@@ -95,8 +91,6 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
             active_notes[note].start_us = current_us;
             active_notes[note].active = 1;
             ptr += 2;
-
-        // --- Note Off or Note On with 0 velocity ---
         } else if ((status & 0xF0) == 0x80 || ((status & 0xF0) == 0x90 && ptr[1] == 0)) {
             uint8_t note = transpose_note(ptr[0]);
 
@@ -113,22 +107,27 @@ void parse_and_send_midi(MidiFile *midi, volatile uint64_t *song_loader_ptr) {
                 };
 
                 uint64_t packet = pack_midi_event(e);
-                *song_loader_ptr = packet;
+
+                // Send 64-bit packet as 8 x 8-bit writes
+                for (int i = 0; i < 8; i++) {
+                    song_loader_base[i] = (packet >> (i * 8)) & 0xFF;
+                }
+
+                // Trigger FPGA read
+                song_ctrl_ptr[3] = 1;
 
                 printf("🎵 Packet Sent - Note: %d | Velocity: %d | Duration: %d ms | Timestamp: %u us\n",
                        e.note, e.velocity, e.duration_us / 1000, e.timestamp_us);
 
                 active_notes[note].active = 0;
             }
-
             ptr += 2;
-
-        // --- Skip unknown event types (safely) ---
         } else {
             ptr += 2;
         }
     }
 }
+
 
 int main() {
     printf("🎼 Waiting for song trigger...\n");
@@ -146,8 +145,9 @@ int main() {
         return 1;
     }
 
-    volatile uint64_t *song_loader_ptr = (uint64_t *)((uint8_t *)virtual_base + SONG_LOADER_OFFSET);
+    // volatile uint64_t *song_loader_ptr = (uint64_t *)((uint8_t *)virtual_base + SONG_LOADER_OFFSET);
     volatile uint32_t *song_ctrl_ptr   = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET); // 0: index, 1: trigger, 2: done
+    volatile uint8_t *song_loader_base = (uint8_t *)((uint8_t *)virtual_base + SONG_LOADER_OFFSET);
 
     while (1) {
         uint32_t trigger = song_ctrl_ptr[1];  // song_load_trigger
@@ -162,7 +162,7 @@ int main() {
 
             MidiFile midi;
             if (load_midi(midi_path, &midi) == 0) {
-                parse_and_send_midi(&midi, song_loader_ptr);
+                parse_and_send_midi(&midi, song_loader_base, song_ctrl_ptr);
                 free(midi.data);
                 song_ctrl_ptr[2] = 1;  // song_loaded_done
                 printf("✅ Song loaded and sent to FPGA.\n");
