@@ -18,185 +18,180 @@
  * checkpatch.pl --file --no-tree fpga_intf.c
  */
 
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/errno.h>
-#include <linux/version.h>
-#include <linux/kernel.h>
-#include <linux/platform_device.h>
-#include <linux/miscdevice.h>
-#include <linux/slab.h>
-#include <linux/io.h>
-#include <linux/of.h>
-#include <linux/of_address.h>
-#include <linux/fs.h>
-#include <linux/uaccess.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <time.h>
+
 #include "fpga_intf.h"
 
-#define DRIVER_NAME "fpga_intf"
 
-/* Example Device registers from lab3, currently for sending background colours */
-#define BG_RED(x) (x)
-#define BG_GREEN(x) ((x)+1)
-#define BG_BLUE(x) ((x)+2)
+#define MAX_ACTIVE_NOTES 128
 
-/*
- * Information about our device
- */
-struct fpga_intf_dev {
-	struct resource res; /* Resource: our registers */
-	void __iomem *virtbase; /* Where registers can be accessed in memory */
-        fpga_intf_color_t background; // Placeholder ioctl argument from lab 3
-} dev;
+typedef struct {
+    uint8_t note;
+    uint8_t velocity;
+    uint32_t start_ticks;
+    uint32_t start_us;
+    int active;
+} ActiveNote;
 
-/*
- * Write segments of a single digit
- * Assumes digit is in range and the device information has been set up
- * 
- * Note* the BG_***(dev.virtbase) calls are macros to clean up register access.
- */
-static void write_background(fpga_intf_color_t *background)
-{
-	iowrite8(background->red, BG_RED(dev.virtbase) );
-	iowrite8(background->green, BG_GREEN(dev.virtbase) );
-	iowrite8(background->blue, BG_BLUE(dev.virtbase) );
-	dev.background = *background;
+static volatile uint8_t *song_loader_base = NULL;
+static void *virtual_base = NULL;
+
+// ------------------- MIDI Helpers -------------------
+
+int load_midi_file(const char *filename, MidiFile *midi) {
+    FILE *f = fopen(filename, "rb");
+    if (!f) {
+        perror("Cannot open MIDI file");
+        return -1;
+    }
+
+    fseek(f, 0, SEEK_END);
+    midi->size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    midi->data = (uint8_t *)malloc(midi->size);
+    if (!midi->data) {
+        fclose(f);
+        fprintf(stderr, "Memory allocation failed\n");
+        return -1;
+    }
+    fread(midi->data, 1, midi->size, f);
+    fclose(f);
+
+    if (memcmp(midi->data, "MThd", 4) != 0) {
+        fprintf(stderr, " Not a valid MIDI file\n");
+        free(midi->data);
+        return -1;
+    }
+
+    midi->division = read16(midi->data + 12);
+    midi->tempo_us_per_quarter = 500000;
+    return 0;
 }
 
-/*
- * Handle ioctl() calls from userspace:
- * Read or write the segments on single digits.
- * Note extensive error checking of arguments
- */
-static long fpga_intf_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
-{
-	fpga_intf_arg_t vla;
-
-	switch (cmd) {
-	case FPGA_INTF_WRITE_BACKGROUND:
-		if (copy_from_user(&vla, (fpga_intf_arg_t *) arg,
-				   sizeof(fpga_intf_arg_t)))
-			return -EACCES;
-		write_background(&vla.background);
-		break;
-
-	case FPGA_INTF_READ_BACKGROUND:
-	  	vla.background = dev.background;
-		if (copy_to_user((fpga_intf_arg_t *) arg, &vla,
-				 sizeof(fpga_intf_arg_t)))
-			return -EACCES;
-		break;
-
-	default:
-		return -EINVAL;
-	}
-
-	return 0;
+void write_midi_packet(uint64_t packet) {
+    for (int i = 7; i >= 4; i--) {
+        song_loader_base[4] = (packet >> (8 * i)) & 0xFF;
+        usleep(100);
+    }
+    for (int i = 3; i >= 0; i--) {
+        song_loader_base[5] = (packet >> (8 * i)) & 0xFF;
+        usleep(100);
+    }
+    song_loader_base[6] = 0x01;
 }
 
-/* The operations our device knows how to do */
-static const struct file_operations fpga_intf_fops = {
-	.owner		= THIS_MODULE,
-	.unlocked_ioctl = fpga_intf_ioctl,
-};
+void parse_and_send_midi(MidiFile *midi) {
+    const uint8_t *ptr = midi->data + 14;
+    if (memcmp(ptr, "MTrk", 4) != 0) {
+        fprintf(stderr, " No MTrk chunk found\n");
+        return;
+    }
+    ptr += 8;
 
-/* Information about our device for the "misc" framework -- like a char dev */
-static struct miscdevice fpga_intf_misc_device = {
-	.minor		= MISC_DYNAMIC_MINOR,
-	.name		= DRIVER_NAME,
-	.fops		= &fpga_intf_fops,
-};
+    ActiveNote active_notes[MAX_ACTIVE_NOTES] = {0};
+    uint32_t current_ticks = 0;
+    uint8_t last_status = 0;
+    double micros_per_tick = (double)midi->tempo_us_per_quarter / midi->division;
 
-/*
- * Initialization code: get resources (registers) and display
- * a welcome message
- */
-static int __init fpga_intf_probe(struct platform_device *pdev)
-{
-        fpga_intf_color_t beige = { 0xf9, 0xe4, 0xb7 };
-	int ret;
+    while (ptr < midi->data + midi->size) {
+        uint32_t delta_ticks = read_variable_length(&ptr);
+        current_ticks += delta_ticks;
+        uint32_t current_us = (uint32_t)(current_ticks * micros_per_tick);
 
-	/* Register ourselves as a misc device: creates /dev/fpga_intf */
-	ret = misc_register(&fpga_intf_misc_device);
+        uint8_t status = *ptr;
+        if (status < 0x80) {
+            status = last_status;
+        } else {
+            ptr++;
+            last_status = status;
+        }
 
-	/* Get the address of our registers from the device tree */
-	ret = of_address_to_resource(pdev->dev.of_node, 0, &dev.res);
-	if (ret) {
-		ret = -ENOENT;
-		goto out_deregister;
-	}
+        if (status == 0xFF && ptr[0] == 0x51 && ptr[1] == 0x03) {
+            ptr += 2;
+            uint32_t new_tempo = (ptr[0] << 16) | (ptr[1] << 8) | ptr[2];
+            midi->tempo_us_per_quarter = new_tempo;
+            micros_per_tick = (double)new_tempo / midi->division;
+            printf("🎼 Tempo Change: %u us/quarter → %.2f µs/tick\n", new_tempo, micros_per_tick);
+            ptr += 3;
+            continue;
+        }
 
-	/* Make sure we can use these registers */
-	if (request_mem_region(dev.res.start, resource_size(&dev.res),
-			       DRIVER_NAME) == NULL) {
-		ret = -EBUSY;
-		goto out_deregister;
-	}
+        if ((status & 0xF0) == 0x90 && ptr[1] > 0) {
+            uint8_t note = transpose_note(ptr[0]);
+            uint8_t velocity = ptr[1];
 
-	/* Arrange access to our registers */
-	dev.virtbase = of_iomap(pdev->dev.of_node, 0);
-	if (dev.virtbase == NULL) {
-		ret = -ENOMEM;
-		goto out_release_mem_region;
-	}
-        
-	/* Set an initial color */
-        write_background(&beige);
+            active_notes[note].note = note;
+            active_notes[note].velocity = velocity;
+            active_notes[note].start_ticks = current_ticks;
+            active_notes[note].start_us = current_us;
+            active_notes[note].active = 1;
+            ptr += 2;
+        } else if ((status & 0xF0) == 0x80 || ((status & 0xF0) == 0x90 && ptr[1] == 0)) {
+            uint8_t note = transpose_note(ptr[0]);
 
-	return 0;
+            if (active_notes[note].active) {
+                uint32_t note_on_us = active_notes[note].start_us;
+                uint32_t duration_us = current_us - note_on_us;
 
-out_release_mem_region:
-	release_mem_region(dev.res.start, resource_size(&dev.res));
-out_deregister:
-	misc_deregister(&fpga_intf_misc_device);
-	return ret;
+                MidiEvent e = {
+                    .note = note,
+                    .velocity = active_notes[note].velocity,
+                    .timestamp_us = note_on_us,
+                    .duration_us = duration_us,
+                    .active = 1
+                };
+
+                uint64_t packet = pack_midi_event(e);
+                write_midi_packet(packet);
+
+                printf("Packet Sent - Note: %d | Velocity: %d | Duration: %d ms | Timestamp: %u us\n",
+                       e.note, e.velocity, e.duration_us / 1000, e.timestamp_us);
+
+                active_notes[note].active = 0;
+            }
+            ptr += 2;
+        } else {
+            ptr += 2;
+        }
+    }
 }
 
-/* Clean-up code: release resources */
-static int fpga_intf_remove(struct platform_device *pdev)
-{
-	iounmap(dev.virtbase);
-	release_mem_region(dev.res.start, resource_size(&dev.res));
-	misc_deregister(&fpga_intf_misc_device);
-	return 0;
+// ------------------- Main Entry -------------------
+
+int main() {
+    printf("🎼 Initializing...\n");
+
+    int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
+    if (mem_fd < 0) {
+        perror("Failed to open /dev/mem");
+        return 1;
+    }
+
+    virtual_base = mmap(NULL, HW_REGS_SPAN, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, HW_REGS_BASE);
+    if (virtual_base == MAP_FAILED) {
+        perror("mmap failed");
+        close(mem_fd);
+        return 1;
+    }
+
+    song_loader_base = (volatile uint8_t *)((uint8_t *)virtual_base + MIDI_INPUT_OFFSET);
+
+    const char *filename = "songs/song0.mid";
+    MidiFile midi;
+    if (load_midi_file(filename, &midi) == 0) {
+        parse_and_send_midi(&midi);
+        free(midi.data);
+        printf("Finished loading and sending MIDI file.\n");
+    }
+
+    munmap(virtual_base, HW_REGS_SPAN);
+    close(mem_fd);
+    return 0;
 }
-
-/* Which "compatible" string(s) to search for in the Device Tree */
-#ifdef CONFIG_OF
-static const struct of_device_id fpga_intf_of_match[] = {
-	{ .compatible = "csee4840,fpga_intf-1.0" },
-	{},
-};
-MODULE_DEVICE_TABLE(of, fpga_intf_of_match);
-#endif
-
-/* Information for registering ourselves as a "platform" driver */
-static struct platform_driver fpga_intf_driver = {
-	.driver	= {
-		.name	= DRIVER_NAME,
-		.owner	= THIS_MODULE,
-		.of_match_table = of_match_ptr(fpga_intf_of_match),
-	},
-	.remove	= __exit_p(fpga_intf_remove),
-};
-
-/* Called when the module is loaded: set things up */
-static int __init fpga_intf_init(void)
-{
-	pr_info(DRIVER_NAME ": init\n");
-	return platform_driver_probe(&fpga_intf_driver, fpga_intf_probe);
-}
-
-/* Calball when the module is unloaded: release resources */
-static void __exit fpga_intf_exit(void)
-{
-	platform_driver_unregister(&fpga_intf_driver);
-	pr_info(DRIVER_NAME ": exit\n");
-}
-
-module_init(fpga_intf_init);
-module_exit(fpga_intf_exit);
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Stephen A. Edwards, Columbia University");
-MODULE_DESCRIPTION("FPGA intf driver");
