@@ -275,134 +275,134 @@ endmodule
 
 // has key detection lighting up virtual keyboard (have not tested)
 
-// module fpga_intf(
-//     input logic        clk,
-//     input logic        reset,
-//     input logic [7:0]  writedata,
-//     input logic        write,
-//     input              chipselect,
-//     input logic [2:0]  address,
-//     output logic [7:0] VGA_R, VGA_G, VGA_B,
-//     output logic       VGA_CLK, VGA_HS, VGA_VS,
-//                        VGA_BLANK_n,
-//     output logic       VGA_SYNC_n
-// );
+module fpga_intf(
+    input logic        clk,
+    input logic        reset,
+    input logic [7:0]  writedata,
+    input logic        write,
+    input              chipselect,
+    input logic [2:0]  address,
+    output logic [7:0] VGA_R, VGA_G, VGA_B,
+    output logic       VGA_CLK, VGA_HS, VGA_VS,
+                       VGA_BLANK_n,
+    output logic       VGA_SYNC_n
+);
 
-//     logic [10:0] hcount;
-//     logic [9:0]  vcount;
-//     logic [7:0]  background_r, background_g, background_b;
+    logic [10:0] hcount;
+    logic [9:0]  vcount;
+    logic [7:0]  background_r, background_g, background_b;
 
-//     // MIDI-related
-//     logic [127:0] active_notes;
-//     logic [63:0]  midi_input_packet;
-//     logic [2:0]   midi_byte_count;
-//     logic [7:0]   status, note, velocity;
+    // MIDI-related
+    logic [127:0] active_notes;
+    logic [63:0]  midi_input_packet;
+    logic [2:0]   midi_byte_count;
+    logic [7:0]   status, note, velocity;
 
-//     // Falling tile control
-//     logic [9:0] tile_y;
-//     logic [3:0] tile_column;
-//     logic [23:0] frame_counter;
-//     int tile_width, tile_x_start, tile_x_end;
+    // Falling tile control
+    logic [9:0] tile_y;
+    logic [3:0] tile_column;
+    logic [23:0] frame_counter;
+    int tile_width, tile_x_start, tile_x_end;
 
-//     vga_counters counters(.clk50(clk), .*);
+    vga_counters counters(.clk50(clk), .*);
 
-//     // === MAIN LOGIC ===
-//     always_ff @(posedge clk) begin
-//         if (reset) begin
-//             background_r <= 8'h0;
-//             background_g <= 8'h0;
-//             background_b <= 8'h80;
-//             tile_y       <= 0;
-//             tile_column  <= 4'd4;
-//             frame_counter <= 0;
-//             midi_byte_count <= 0;
-//             active_notes <= 128'd0;
-//         end else begin
-//             if (chipselect && write) begin
-//                 case (address)
-//                     3'h0: background_r <= writedata;
-//                     3'h1: background_g <= writedata;
-//                     3'h2: background_b <= writedata;
-//                     3'h3: begin
-//                         midi_input_packet <= {midi_input_packet[55:0], writedata};
-//                         midi_byte_count <= midi_byte_count + 1;
-//                         if (midi_byte_count == 7) begin
-//                             status   <= midi_input_packet[39:32];
-//                             note     <= midi_input_packet[31:24];
-//                             velocity <= midi_input_packet[23:16];
+    // === MAIN LOGIC ===
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            background_r <= 8'h0;
+            background_g <= 8'h0;
+            background_b <= 8'h80;
+            tile_y       <= 0;
+            tile_column  <= 4'd4;
+            frame_counter <= 0;
+            midi_byte_count <= 0;
+            active_notes <= 128'd0;
+        end else begin
+            if (chipselect && write) begin
+                case (address)
+                    3'h0: background_r <= writedata;
+                    3'h1: background_g <= writedata;
+                    3'h2: background_b <= writedata;
+                    3'h3: begin
+                        midi_input_packet <= {midi_input_packet[55:0], writedata};
+                        midi_byte_count <= midi_byte_count + 1;
+                        if (midi_byte_count == 7) begin
+                            status   <= midi_input_packet[39:32];
+                            note     <= midi_input_packet[31:24];
+                            velocity <= midi_input_packet[23:16];
 
-//                             if ((midi_input_packet[39:32] & 8'hF0) == 8'h90 && midi_input_packet[23:16] > 0)
-//                                 active_notes[midi_input_packet[31:24]] <= 1'b1;
-//                             else if ((midi_input_packet[39:32] & 8'hF0) == 8'h80 || ((midi_input_packet[39:32] & 8'hF0) == 8'h90 && midi_input_packet[23:16] == 0))
-//                                 active_notes[midi_input_packet[31:24]] <= 1'b0;
+                            if ((midi_input_packet[39:32] & 8'hF0) == 8'h90 && midi_input_packet[23:16] > 0)
+                                active_notes[midi_input_packet[31:24]] <= 1'b1;
+                            else if ((midi_input_packet[39:32] & 8'hF0) == 8'h80 || ((midi_input_packet[39:32] & 8'hF0) == 8'h90 && midi_input_packet[23:16] == 0))
+                                active_notes[midi_input_packet[31:24]] <= 1'b0;
 
-//                             midi_byte_count <= 0;
-//                         end
-//                     end
-//                 endcase
-//             end
+                            midi_byte_count <= 0;
+                        end
+                    end
+                endcase
+            end
 
-//             frame_counter <= frame_counter + 1;
-//             if (frame_counter >= 833_333) begin
-//                 frame_counter <= 0;
-//                 tile_y <= tile_y + 1;
-//                 if (tile_y > 480) tile_y <= 0;
-//             end
-//         end
-//     end
+            frame_counter <= frame_counter + 1;
+            if (frame_counter >= 833_333) begin
+                frame_counter <= 0;
+                tile_y <= tile_y + 1;
+                if (tile_y > 480) tile_y <= 0;
+            end
+        end
+    end
 
-//     // === VGA DRAWING ===
-//     always_comb begin
-//         {VGA_R, VGA_G, VGA_B} = {background_r, background_g, background_b};
+    // === VGA DRAWING ===
+    always_comb begin
+        {VGA_R, VGA_G, VGA_B} = {background_r, background_g, background_b};
 
-//         if (VGA_BLANK_n) begin
-//             int key_top    = 360;
-//             int key_bottom = 480;
-//             int border     = 2;
-//             int note_base  = 60;  // MIDI note for key 0
+        if (VGA_BLANK_n) begin
+            int key_top    = 360;
+            int key_bottom = 480;
+            int border     = 2;
+            int note_base  = 60;  // MIDI note for key 0
 
-//             // --- Draw WHITE keys with MIDI RED highlight ---
-//             if (vcount >= key_top && vcount < key_bottom) begin
-//                 for (int k = 0; k < 15; k++) begin
-//                     int x_start = 5 + k * 42;
-//                     int x_end   = x_start + 42;
+            // --- Draw WHITE keys with MIDI RED highlight ---
+            if (vcount >= key_top && vcount < key_bottom) begin
+                for (int k = 0; k < 15; k++) begin
+                    int x_start = 5 + k * 42;
+                    int x_end   = x_start + 42;
 
-//                     if (hcount >= x_start && hcount < x_end) begin
-//                         if ((hcount - x_start < border) || (x_end - hcount <= border) ||
-//                             (vcount - key_top < border) || (key_bottom - vcount <= border))
-//                             {VGA_R, VGA_G, VGA_B} = {8'h0, 8'h0, 8'h0};
-//                         else if (active_notes[note_base + k])
-//                             {VGA_R, VGA_G, VGA_B} = {8'hFF, 8'h00, 8'h00}; // Red for active
-//                         else
-//                             {VGA_R, VGA_G, VGA_B} = {8'hFF, 8'hFF, 8'hFF}; // White default
-//                     end
-//                 end
-//             end
+                    if (hcount >= x_start && hcount < x_end) begin
+                        if ((hcount - x_start < border) || (x_end - hcount <= border) ||
+                            (vcount - key_top < border) || (key_bottom - vcount <= border))
+                            {VGA_R, VGA_G, VGA_B} = {8'h0, 8'h0, 8'h0};
+                        else if (active_notes[note_base + k])
+                            {VGA_R, VGA_G, VGA_B} = {8'hFF, 8'h00, 8'h00}; // Red for active
+                        else
+                            {VGA_R, VGA_G, VGA_B} = {8'hFF, 8'hFF, 8'hFF}; // White default
+                    end
+                end
+            end
 
-//             // --- Draw BLACK keys (unchanged) ---
-//             if (vcount >= key_top && vcount < key_top + 60) begin
-//                 if ((hcount >=  26 && hcount <  64) ||
-//                     (hcount >=  68 && hcount < 106) ||
-//                     (hcount >= 152 && hcount < 190) ||
-//                     (hcount >= 194 && hcount < 232) ||
-//                     (hcount >= 236 && hcount < 274) ||
-//                     (hcount >= 320 && hcount < 358) ||
-//                     (hcount >= 362 && hcount < 400) ||
-//                     (hcount >= 446 && hcount < 484) ||
-//                     (hcount >= 488 && hcount < 520) ||
-//                     (hcount >= 530 && hcount < 568))
-//                     {VGA_R, VGA_G, VGA_B} = {8'h0, 8'h0, 8'h0};
-//             end
+            // --- Draw BLACK keys (unchanged) ---
+            if (vcount >= key_top && vcount < key_top + 60) begin
+                if ((hcount >=  26 && hcount <  64) ||
+                    (hcount >=  68 && hcount < 106) ||
+                    (hcount >= 152 && hcount < 190) ||
+                    (hcount >= 194 && hcount < 232) ||
+                    (hcount >= 236 && hcount < 274) ||
+                    (hcount >= 320 && hcount < 358) ||
+                    (hcount >= 362 && hcount < 400) ||
+                    (hcount >= 446 && hcount < 484) ||
+                    (hcount >= 488 && hcount < 520) ||
+                    (hcount >= 530 && hcount < 568))
+                    {VGA_R, VGA_G, VGA_B} = {8'h0, 8'h0, 8'h0};
+            end
 
-//             // --- Draw Falling Tile ---
-//             tile_width = 42;
-//             tile_x_start = 5 + tile_column * tile_width;
-//             tile_x_end = tile_x_start + tile_width;
+            // --- Draw Falling Tile ---
+            tile_width = 42;
+            tile_x_start = 5 + tile_column * tile_width;
+            tile_x_end = tile_x_start + tile_width;
 
-//             if (vcount >= tile_y && vcount < tile_y + 120) begin
-//                 if (hcount >= tile_x_start && hcount < tile_x_end)
-//                     {VGA_R, VGA_G, VGA_B} = {8'h00, 8'hFF, 8'hFF}; // Cyan tile
-//             end
-//         end
-//     end
-// endmodule
+            if (vcount >= tile_y && vcount < tile_y + 120) begin
+                if (hcount >= tile_x_start && hcount < tile_x_end)
+                    {VGA_R, VGA_G, VGA_B} = {8'h00, 8'hFF, 8'hFF}; // Cyan tile
+            end
+        end
+    end
+endmodule
