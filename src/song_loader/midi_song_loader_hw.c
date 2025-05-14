@@ -4,14 +4,14 @@
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <sys/mman.h>
+#include <sys/ioctl.h>
 #include <time.h>
 
 #include "midi_common.h"
-#include "hardware_defs.h"
 #include "hw_writer.h"
 
 #define MAX_ACTIVE_NOTES 128
+#define FPGA_DEVICE "/dev/fpga_intf"
 
 typedef struct {
     uint8_t note;
@@ -45,7 +45,7 @@ int load_midi(const char *filename, MidiFile *midi) {
     return 0;
 }
 
-void parse_and_send_midi(MidiFile *midi, volatile uint8_t *song_loader_base, volatile uint32_t *song_ctrl_ptr) {
+void parse_and_send_midi(MidiFile *midi, int fd) {
     const uint8_t *ptr = midi->data + 14;
     if (memcmp(ptr, "MTrk", 4) != 0) {
         fprintf(stderr, "❌ No MTrk chunk found\n");
@@ -108,21 +108,10 @@ void parse_and_send_midi(MidiFile *midi, volatile uint8_t *song_loader_base, vol
 
                 uint64_t packet = pack_midi_event(e);
 
-                // Send 8 bytes to hardware registers using indirect addressing
-                // Write top 4 bytes to address 0x04 (packet_high)
-                for (int i = 0; i < 4; i++) {
-                    song_loader_base[4] = (packet >> ((7 - i) * 8)) & 0xFF;
+                // Write packet to kernel driver
+                if (write(fd, &packet, sizeof(packet)) != sizeof(packet)) {
+                    perror("❌ Failed to write MIDI packet to FPGA");
                 }
-
-                // Write lower 4 bytes to address 0x05 (packet_low)
-                for (int i = 4; i < 8; i++) {
-                    song_loader_base[5] = (packet >> ((7 - i) * 8)) & 0xFF;
-                }
-
-                // Trigger MIDI write at address 0x06
-                song_loader_base[6] = 1;
-
-                song_ctrl_ptr[3] = 1;  // Optional: trigger signal
 
                 printf("🎵 Packet Sent - Note: %d | Velocity: %d | Duration: %d ms | Timestamp: %u us\n",
                        e.note, e.velocity, e.duration_us / 1000, e.timestamp_us);
@@ -136,51 +125,38 @@ void parse_and_send_midi(MidiFile *midi, volatile uint8_t *song_loader_base, vol
     }
 }
 
-
 int main() {
     printf("🎼 Press KEY1 to load and send song1.mid...\n");
 
-    int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-    if (mem_fd < 0) {
-        perror("❌ Failed to open /dev/mem");
+    int fd = open(FPGA_DEVICE, O_WRONLY);
+    if (fd < 0) {
+        perror("❌ Failed to open FPGA device");
         return 1;
     }
-
-    void *virtual_base = mmap(NULL, HW_REGS_SPAN, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, HW_REGS_BASE);
-    if (virtual_base == MAP_FAILED) {
-        perror("❌ mmap failed");
-        close(mem_fd);
-        return 1;
-    }
-
-    volatile uint32_t *song_ctrl_ptr = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET);
-    volatile uint8_t *song_loader_base = (uint8_t *)((uint8_t *)virtual_base + SONG_LOADER_OFFSET);
 
     while (1) {
-        uint32_t trigger = song_ctrl_ptr[1];  // KEY1 press = trigger
+        // Simple polling method for testing. Replace with ioctl or shared flag if needed.
+        printf("🔄 Checking KEY1...\n");
+        sleep(1);  // simulate 1-second poll (or integrate ioctl if driver supports it)
 
-        if (trigger) {
-            printf("▶️ Detected KEY1 press. Loading song1.mid\n");
+        // Simulate KEY1 press detection here
+        // Replace this with actual flag check if implemented via ioctl
 
-            MidiFile midi;
-            if (load_midi("songs/song1.mid", &midi) == 0) {
-                parse_and_send_midi(&midi, song_loader_base, song_ctrl_ptr);
-                free(midi.data);
-                song_ctrl_ptr[2] = 1;  // Done flag
-                printf("✅ song1.mid loaded and packets sent.\n");
-            } else {
-                song_ctrl_ptr[2] = 0;
-                fprintf(stderr, "❌ Failed to load song1.mid\n");
-            }
+        printf("▶️ Detected KEY1 press. Loading song1.mid\n");
 
-            // Reset KEY1 trigger
-            song_ctrl_ptr[1] = 0;
+        MidiFile midi;
+        if (load_midi("songs/song1.mid", &midi) == 0) {
+            parse_and_send_midi(&midi, fd);
+            free(midi.data);
+            printf("✅ song1.mid loaded and packets sent.\n");
+        } else {
+            fprintf(stderr, "❌ Failed to load song1.mid\n");
         }
 
-        usleep(50000);  // check every 50ms
+        // Simulate reset
+        sleep(1);
     }
 
-    munmap(virtual_base, HW_REGS_SPAN);
-    close(mem_fd);
+    close(fd);
     return 0;
 }

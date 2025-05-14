@@ -12,10 +12,14 @@ BINARIES = $(BIN_DIR)/midi_logger \
            $(BIN_DIR)/midi_song_loader \
            $(BIN_DIR)/midi_song_loader_hw
 
-all: $(BINARIES)
+KERNEL_SRC = fpga_midi.c
+KERNEL_OBJ = fpga_midi.ko
+KERNEL_NAME = fpga_intf
+
+all: $(BINARIES) $(KERNEL_OBJ)
 
 # ─────────────────────────────────────────────────────
-# Build Targets
+# User Binary Build Targets
 # ─────────────────────────────────────────────────────
 
 $(BIN_DIR)/midi_logger: $(SRC_DIR)/logger/midi_logger.c $(UTILS)
@@ -33,6 +37,32 @@ $(BIN_DIR)/midi_song_loader: $(SRC_DIR)/song_loader/midi_song_loader.c $(UTILS)
 $(BIN_DIR)/midi_song_loader_hw: $(SRC_DIR)/song_loader/midi_song_loader_hw.c $(UTILS)
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $@ $^
+
+# ─────────────────────────────────────────────────────
+# Kernel Module Build Targets
+# ─────────────────────────────────────────────────────
+
+$(KERNEL_OBJ): $(KERNEL_SRC)
+	@echo "🧩 Building kernel module: $(KERNEL_OBJ)"
+	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+
+kernel: $(KERNEL_OBJ)
+
+load_kernel: $(KERNEL_OBJ)
+	@echo "📦 Loading kernel module..."
+	sudo insmod $(KERNEL_OBJ)
+	@sleep 0.5
+	@dmesg | tail -n 10
+
+unload_kernel:
+	@echo "🧹 Unloading kernel module..."
+	sudo rmmod $(KERNEL_NAME)
+	@sleep 0.5
+	@dmesg | tail -n 10
+
+clean_kernel:
+	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	@rm -f $(KERNEL_OBJ) *.mod.* *.o *.order *.symvers .*.cmd
 
 # ─────────────────────────────────────────────────────
 # Run Targets
@@ -54,10 +84,12 @@ run_song_loader_hw: $(BIN_DIR)/midi_song_loader_hw
 	@echo "🎼 Running midi_song_loader_hw (requires sudo)..."
 	sudo ./$<
 
-# Optional default run target
-run: run_logger
+# ─────────────────────────────────────────────────────
+# Cleanup
+# ─────────────────────────────────────────────────────
 
 clean:
 	rm -rf $(BIN_DIR)
 
-.PHONY: all clean run_logger run_logger_hw run_song_loader run_song_loader_hw run
+.PHONY: all clean kernel clean_kernel load_kernel unload_kernel \
+	run run_logger run_logger_hw run_song_loader run_song_loader_hw
