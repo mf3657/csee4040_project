@@ -1,11 +1,17 @@
 #include <linux/module.h>
+#include <linux/init.h>
+#include <linux/errno.h>
+#include <linux/version.h>
 #include <linux/kernel.h>
+#include <linux/platform_device.h>
+#include <linux/miscdevice.h>
+#include <linux/slab.h>
+#include <linux/io.h>
+#include <linux/of.h>
+#include <linux/of_address.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
-#include <linux/ioctl.h>
-#include <linux/io.h>
-#include <linux/cdev.h>
-#include <linux/device.h>
+#include "fpga_intf.h"
 
 #include "fpga_ioctl.h"
 
