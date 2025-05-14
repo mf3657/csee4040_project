@@ -1,10 +1,17 @@
 #include <linux/module.h>
+#include <linux/init.h>
+#include <linux/errno.h>
+#include <linux/version.h>
+#include <linux/kernel.h>
+#include <linux/platform_device.h>
+#include <linux/miscdevice.h>
+#include <linux/slab.h>
+#include <linux/io.h>
+#include <linux/of.h>
+#include <linux/of_address.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
-#include <linux/io.h>
-#include <linux/cdev.h>
-#include <linux/device.h>
-#include <linux/ioctl.h>
+#include "fpga_intf.h"
 
 #define DEVICE_NAME "fpga_intf"
 #define CLASS_NAME  "fpgamidi"
@@ -16,11 +23,25 @@
 #define IOCTL_START_GAME   _IO('M', 1)
 #define IOCTL_RESET_SYSTEM _IO('M', 2)
 
+
+
 static int    major;
 static void __iomem *virtual_base;
 static void __iomem *midi_base;
 static struct class*  fpga_class;
 static struct device* fpga_device;
+
+
+/*
+ * Information about our device
+ */
+struct fpga_intf_dev {
+	struct resource res; /* Resource: our registers */
+	void __iomem *virtbase; /* Where registers can be accessed in memory */
+        fpga_intf_color_t background; // Placeholder ioctl argument from lab 3
+} dev;
+
+
 
 static long fpga_ioctl(struct file *f, unsigned int cmd, unsigned long arg) {
     switch (cmd) {

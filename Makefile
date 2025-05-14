@@ -49,13 +49,13 @@ kernel: $(KERNEL_OBJ)
 
 load_kernel: $(KERNEL_OBJ)
 	@echo "📦 Loading kernel module..."
-	sudo insmod $(KERNEL_OBJ)
+	insmod $(KERNEL_OBJ)
 	@sleep 0.5
 	@dmesg | tail -n 10
 
 unload_kernel:
 	@echo "🧹 Unloading kernel module..."
-	sudo rmmod $(KERNEL_NAME)
+	rmmod $(KERNEL_NAME)
 	@sleep 0.5
 	@dmesg | tail -n 10
 
@@ -70,7 +70,7 @@ run_logger: $(BIN_DIR)/midi_logger
 
 run_logger_hw: $(BIN_DIR)/midi_logger_hw
 	@echo "🎧 Running midi_logger_hw (requires sudo)..."
-	sudo ./$<
+	./$<
 
 run_song_loader: $(BIN_DIR)/midi_song_loader
 	@echo "🎼 Running midi_song_loader..."
@@ -78,7 +78,7 @@ run_song_loader: $(BIN_DIR)/midi_song_loader
 
 run_song_loader_hw: $(BIN_DIR)/midi_song_loader_hw
 	@echo "🎼 Running midi_song_loader_hw (requires sudo)..."
-	sudo ./$<
+	./$<
 
 # ──────────────── Cleanup ────────────────
 clean:

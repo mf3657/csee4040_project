@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <sys/time.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <libusb-1.0/libusb.h>
+
+#include "fpga_ioctl.h"  // ioctl struct + macros
+
+#define VENDOR_ID        0x1235
+#define PRODUCT_ID       0x0102
+#define INTERFACE_NUMBER 1
+#define ENDPOINT_IN      0x81
+#define FPGA_DEVICE      "/dev/fpga_intf"
+
+// Pack status, note, velocity, and timestamp into a 64-bit value
+uint64_t pack_midi(uint8_t status, uint8_t note, uint8_t velocity, uint64_t timestamp_us) {
+    return ((uint64_t)status << 56) |
+           ((uint64_t)note << 48)   |
+           ((uint64_t)velocity << 40) |
+           (timestamp_us & 0xFFFFFFFFFF); // keep lower 40 bits of timestamp
+}
+
+int main() {
+    libusb_context *ctx = NULL;
+    libusb_device_handle *handle = NULL;
+    unsigned char buffer[64];
+    int transferred, result;
+
+    printf("🎹 Launchkey MIDI Logger + FPGA Interface Starting...\n");
+
+    // Open FPGA kernel device
+    int fd = open(FPGA_DEVICE, O_RDWR);
+    if (fd < 0) {
+        perror("❌ Failed to open /dev/fpga_intf");
+        return EXIT_FAILURE;
+    }
+
+    // Initialize libusb
+    if (libusb_init(&ctx) < 0) {
+        fprintf(stderr, "❌ libusb initialization failed.\n");
+        return EXIT_FAILURE;
+    }
+
+    handle = libusb_open_device_with_vid_pid(ctx, VENDOR_ID, PRODUCT_ID);
+    if (!handle) {
+        fprintf(stderr, "❌ Launchkey Mini not found.\n");
+        libusb_exit(ctx);
+        return EXIT_FAILURE;
+    }
+
+    libusb_set_auto_detach_kernel_driver(handle, 1);
+    libusb_detach_kernel_driver(handle, INTERFACE_NUMBER);
+
+    if (libusb_claim_interface(handle, INTERFACE_NUMBER) != 0) {
+        fprintf(stderr, "❌ Failed to claim MIDI interface.\n");
+        libusb_close(handle);
+        libusb_exit(ctx);
+        return EXIT_FAILURE;
+    }
+
+    printf("✅ MIDI interface claimed. Listening for Note On events...\n");
+
+    while (1) {
+        result = libusb_bulk_transfer(handle, ENDPOINT_IN, buffer, sizeof(buffer), &transferred, 1000);
+        if (result == 0 && transferred > 0) {
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            uint64_t timestamp_us = (uint64_t)tv.tv_sec * 1000000 + tv.tv_usec;
+
+            for (int i = 0; i < transferred; i += 4) {
+                if (i + 3 >= transferred) break;
+
+                uint8_t status   = buffer[i + 1];
+                uint8_t note     = buffer[i + 2];
+                uint8_t velocity = buffer[i + 3];
+
+                if ((status & 0xF0) == 0x90 && velocity > 0) {
+                    printf("[%llu us] 🎶 Note On: Note = %d, Velocity = %d\n", timestamp_us, note, velocity);
+
+                    uint64_t full_packet = pack_midi(status, note, velocity, timestamp_us);
+                    struct midi_packet packet;
+                    packet.high = (full_packet >> 32) & 0xFFFFFFFF;
+                    packet.low  = full_packet & 0xFFFFFFFF;
+
+                    if (ioctl(fd, IOCTL_SEND_MIDI_EVENT, &packet) < 0) {
+                        perror("❌ ioctl failed");
+                    }
+
+                    usleep(100);  // throttle
+                }
+            }
+        } else if (result == LIBUSB_ERROR_TIMEOUT) {
+            continue;
+        } else {
+            fprintf(stderr, "⚠️ USB error: %s\n", libusb_error_name(result));
+            break;
+        }
+    }
+
+    libusb_release_interface(handle, INTERFACE_NUMBER);
+    libusb_close(handle);
+    libusb_exit(ctx);
+    close(fd);
+
+    return EXIT_SUCCESS;
+}
