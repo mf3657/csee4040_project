@@ -21,7 +21,6 @@ typedef struct {
     uint32_t tempo_us_per_quarter;
 } MidiFile;
 
-// Function declarations (you'll implement these in Step 2)
 uint16_t read16(const uint8_t *data);
 uint32_t read_variable_length(const uint8_t **data_ptr);
 int transpose_note(int note);

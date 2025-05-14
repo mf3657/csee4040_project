@@ -108,11 +108,21 @@ void parse_and_send_midi(MidiFile *midi, volatile uint8_t *song_loader_base, vol
 
                 uint64_t packet = pack_midi_event(e);
 
-                for (int i = 0; i < 8; i++) {
-                    song_loader_base[i] = (packet >> (i * 8)) & 0xFF;
+                // Send 8 bytes to hardware registers using indirect addressing
+                // Write top 4 bytes to address 0x04 (packet_high)
+                for (int i = 0; i < 4; i++) {
+                    song_loader_base[4] = (packet >> ((7 - i) * 8)) & 0xFF;
                 }
 
-                song_ctrl_ptr[3] = 1;
+                // Write lower 4 bytes to address 0x05 (packet_low)
+                for (int i = 4; i < 8; i++) {
+                    song_loader_base[5] = (packet >> ((7 - i) * 8)) & 0xFF;
+                }
+
+                // Trigger MIDI write at address 0x06
+                song_loader_base[6] = 1;
+
+                song_ctrl_ptr[3] = 1;  // Optional: trigger signal
 
                 printf("🎵 Packet Sent - Note: %d | Velocity: %d | Duration: %d ms | Timestamp: %u us\n",
                        e.note, e.velocity, e.duration_us / 1000, e.timestamp_us);
@@ -125,6 +135,7 @@ void parse_and_send_midi(MidiFile *midi, volatile uint8_t *song_loader_base, vol
         }
     }
 }
+
 
 int main() {
     printf("🎼 Press KEY1 to load and send song1.mid...\n");

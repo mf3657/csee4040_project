@@ -9,7 +9,7 @@
 
 #include "midi_common.h"
 #include "hardware_defs.h"
-#include "hw_writer.h"  // ✅ Use shared pack_midi_input()
+#include "hw_writer.h"
 
 #define VENDOR_ID        0x1235
 #define PRODUCT_ID       0x0102
@@ -24,10 +24,10 @@ int main() {
 
     int mem_fd;
     void *virtual_base;
-    volatile uint64_t *midi_input_ptr;
+    volatile uint8_t *midi_input_base;
     volatile uint32_t *song_ctrl_ptr;
 
-    printf("🎹 Launchkey MIDI Logger with FPGA HW Write (Real-Time Input) Starting...\n");
+    printf("🎹 Launchkey MIDI Logger with Address-Mapped FPGA Write Starting...\n");
 
     // FPGA memory access
     mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
@@ -43,8 +43,8 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    midi_input_ptr = (uint64_t *)((uint8_t *)virtual_base + MIDI_INPUT_OFFSET);
-    song_ctrl_ptr  = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET);  // [3] = game_started_hw
+    midi_input_base = (uint8_t *)virtual_base + MIDI_INPUT_OFFSET;   // FPGA expects byte writes at offset 0x2008
+    song_ctrl_ptr   = (uint32_t *)((uint8_t *)virtual_base + SONG_CTRL_OFFSET); // [3] = game_started_hw
 
     // Initialize USB MIDI connection
     if (libusb_init(&ctx) < 0) {
@@ -83,11 +83,10 @@ int main() {
             for (int i = 0; i < transferred; i += 4) {
                 if (i + 3 >= transferred) break;
 
-                uint8_t status = buffer[i + 1];
-                uint8_t note = buffer[i + 2];
+                uint8_t status   = buffer[i + 1];
+                uint8_t note     = buffer[i + 2];
                 uint8_t velocity = buffer[i + 3];
 
-                // Send only Note On with non-zero velocity
                 if ((status & 0xF0) == 0x90 && velocity > 0) {
                     printf("[%llu us] Note On: Note = %d, Velocity = %d %s\n",
                            timestamp_us, note, velocity,
@@ -95,8 +94,21 @@ int main() {
 
                     if (game_started) {
                         uint64_t packet = pack_midi_input(status, note, velocity, timestamp_us);
-                        *midi_input_ptr = packet;
-                        usleep(100);  // avoid bus contention
+
+                        // Write high 4 bytes to address offset 0x04
+                        for (int j = 0; j < 4; j++) {
+                            midi_input_base[4] = (packet >> ((7 - j) * 8)) & 0xFF;
+                        }
+
+                        // Write low 4 bytes to offset 0x05
+                        for (int j = 4; j < 8; j++) {
+                            midi_input_base[5] = (packet >> ((7 - j) * 8)) & 0xFF;
+                        }
+
+                        // Trigger the write with offset 0x06
+                        midi_input_base[6] = 1;
+
+                        usleep(100);  // throttle writes
                     }
                 }
             }
